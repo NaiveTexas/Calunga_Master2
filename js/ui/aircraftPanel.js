@@ -95,9 +95,16 @@ function loadAircraftModels() {
         input.value = name;
         input.disabled = model.planningAvailable === false;
         input.checked = index === 0;
-        input.addEventListener("change", () => {
-            if (input.checked) updateAircraftRegistrations(name);
-        });
+        const selectModel = () => {
+            if (input.disabled || !input.checked) return;
+            if (mission.aircraft.model.name !== name) updateAircraftRegistrations(name);
+            const gallery = document.getElementById("aircraftGallery");
+            gallery.open = false;
+            gallery.querySelector("summary")?.focus();
+        };
+        input.addEventListener("change", selectModel);
+        // Clicking the already selected model also closes the picker.
+        input.addEventListener("click", selectModel);
 
         const card = document.createElement("span");
         card.className = "aircraft-card";
