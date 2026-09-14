@@ -1,0 +1,59 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { notamAirports, initializeNotamPanel, refreshNotamPanel } from "../js/ui/notamPanel.js";
+import { mission } from "../js/models/missions.js";
+import { parseHTML } from "linkedom";
+
+test("NOTAM page deduplicates all legs and includes only procedure airports among waypoints", async () => {
+    const airport = icao => ({ icao, type: "AIRPORT" });
+    const route = { origin: airport("SBNT"), destination: airport("SBRF"), alternate: airport("SBSV"), waypoints: [
+        { ...airport("SBFZ"), procedure: true }, { ...airport("SBMO"), procedure: false }, { type: "FIX", ident: "TEST" }
+    ] };
+    mission.legs = [{ route }, { route: { ...route, origin: airport("SBRF") } }];
+    mission.legs.forEach(leg => { leg.schedule = { date: "2026-09-12", etd: "12:00", arrival: "2026-09-12T14:00:00Z" }; });
+    assert.deepEqual([...notamAirports(mission.legs).keys()], ["SBNT", "SBRF", "SBSV", "SBFZ"]);
+    const { window, document } = parseHTML('<html><body><section id="notamPage" class="active"><button id="refreshNotams"></button><div id="notamAirports"></div></section></body></html>');
+    globalThis.document = document;
+    globalThis.window = window;
+    const requests = [];
+    globalThis.fetch = async url => {
+        const icao = new URL(url, "http://localhost").searchParams.get("icao");
+        requests.push(icao);
+        if (icao === "SBSV") throw new Error("offline");
+        return { ok: true, json: async () => ({ fetchedAt: "2026-09-12T12:00:00Z", reports: [{ n: "B0001/26", cod: icao === "SBNT" ? "QMRLC" : "QXXXX", tp: "N", loc: icao, b: "2609010000", c: "PERM", e: "<img src=x>" }] }) };
+    };
+    initializeNotamPanel();
+    await refreshNotamPanel();
+    assert.equal(requests.length, 4);
+    assert.equal(document.querySelectorAll(".notam-report").length, 3);
+    assert.equal(document.querySelectorAll("img").length, 0);
+    const filter = text => [...document.querySelectorAll(".notam-category-filter button")].find(button => button.textContent.startsWith(text));
+    assert.equal(filter("Todos").textContent, "Todos (3)");
+    filter("Pista").click();
+    assert.equal([...document.querySelectorAll(".notam-report")].filter(report => !report.hidden).length, 1);
+    assert.equal(requests.length, 4);
+    filter("Outros").click();
+    assert.equal([...document.querySelectorAll(".notam-report")].filter(report => !report.hidden).length, 2);
+    filter("Todos").click();
+    assert.equal([...document.querySelectorAll(".notam-report")].filter(report => !report.hidden).length, 3);
+    assert.match(document.body.textContent, /Não foi possível consultar/);
+    route.waypoints[0].procedure = false;
+    await refreshNotamPanel();
+    assert.equal(document.querySelectorAll("#notamAirports > details").length, 3);
+    // Fortaleza is involved only in leg 2; leg 1's overlapping time must not qualify it.
+    mission.legs[0].route = { ...route, waypoints: [] };
+    mission.legs[1].route = { ...route, waypoints: [{ ...airport("SBFZ"), procedure: true }] };
+    mission.legs[1].schedule = { date: "2026-09-12", etd: "18:00", arrival: "2026-09-12T20:00:00Z" };
+    await refreshNotamPanel();
+    const fz = [...document.querySelectorAll(".notam-report")].find(article => article.notamReport.loc === "SBFZ");
+    fz.notamReport.d = "DAILY 1200-1400";
+    await refreshNotamPanel();
+    assert.equal(fz.hidden, true);
+    assert.equal(fz.querySelector(".notam-leg-validity").textContent, "Sem coincidência confirmada com as pernas envolvidas");
+    const countBefore = requests.length;
+    mission.legs[1].schedule.etd = "13:00";
+    await refreshNotamPanel();
+    assert.equal(fz.hidden, false);
+    assert.equal(requests.length, countBefore);
+    assert.match(fz.querySelector(".notam-dates").textContent, /01-09-2026 às 00:00 UTC/);
+});

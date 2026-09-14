@@ -1,0 +1,1211 @@
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Calunga de Missão Aérea - Rumba</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<body>
+
+    <div class="app">
+
+        <!-- ================================== -->
+        <!--              SIDEBAR               -->
+        <!-- ================================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-top">
+
+                <button
+                    class="sidebar-button"
+                    data-tool="briefing"
+                    type="button"
+                    title="Briefing"
+                >
+                    <i data-lucide="clipboard-list"></i>
+                </button>
+
+
+                <button
+                    class="sidebar-button"
+                    data-tool="weather"
+                    type="button"
+                    title="Meteorologia"
+                >
+                    <i data-lucide="cloud"></i>
+                </button>
+
+                <button class="sidebar-button" data-tool="fullBriefing" type="button" title="Full Briefing">
+                    <i data-lucide="file-text"></i>
+                </button>
+                <button class="sidebar-button" data-tool="notam" type="button" title="NOTAMs" aria-label="NOTAMs">
+                    <i data-lucide="megaphone"></i>
+                </button>
+
+            </div>
+
+        </aside>
+
+        <main class="app-main">
+
+            <!-- ================================== -->
+            <!--            MISSION BAR             -->
+            <!-- ================================== -->
+
+            <header class="mission-bar">
+
+                <div class="flight-route">
+
+                    <div class="route">
+
+                        <span
+                            id="route-departure"
+                            class="dep"
+                        >
+                            ----
+                        </span>
+
+                        <span class="arrow">
+                            →
+                        </span>
+
+                        <span
+                            id="route-destination"
+                            class="arr"
+                        >
+                            ----
+                        </span>
+
+                    </div>
+
+
+                    <div class="times">
+
+                        <span id="route-etd">
+                            (--:--)
+                        </span>
+
+                        <span id="route-eta">
+                            (--:--)
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ================================== -->
+            <!--               MAP                  -->
+            <!-- ================================== -->
+
+            <div class="map-area">
+
+                <div
+                    id="mapPanel"
+                    class="map-body"
+                >
+                </div>
+
+                <div
+                    class="enrc-controls"
+                    role="group"
+                    aria-label="Tipo de carta ENRC"
+                >
+                    <button
+                        class="enrc-control active"
+                        data-enrc-type="LOW"
+                        type="button"
+                    >
+                        ENRC LOW
+                    </button>
+
+                    <button
+                        class="enrc-control"
+                        data-enrc-type="HIGH"
+                        type="button"
+                    >
+                        ENRC HIGH
+                    </button>
+                </div>
+
+                <div
+                    id="enrcZoomNotice"
+                    class="enrc-zoom-notice"
+                    role="status"
+                    hidden
+                >
+                    Aproxime o mapa para visualizar as cartas ENRC.
+                </div>
+
+            </div>
+
+            <aside
+                id="toolPanel"
+                class="tool-panel"
+            >
+
+                <!-- ================================== -->
+                <!--             BRIEFING               -->
+                <!-- ================================== -->
+
+                <section
+                    id="briefingPanel"
+                    class="tool-content"
+                >
+
+
+                    <!-- ================================== -->
+                    <!--         BRIEFING NAVIGATION        -->
+                    <!-- ================================== -->
+
+                    <div class="briefing-navigation">
+
+                        <button
+                            id="briefingPrevious"
+                            class="briefing-arrow"
+                            type="button"
+                        >
+                            ←
+                        </button>
+
+
+                        <div class="briefing-tabs">
+
+                            <button
+                                class="briefing-tab active"
+                                type="button"
+                                data-panel="routePanel"
+                            >
+                                <span class="briefing-tab-icon">
+                                    🗺
+                                </span>
+
+                                <span class="briefing-tab-label">
+                                    Rota
+                                </span>
+                            </button>
+
+
+                            <button
+                                class="briefing-tab"
+                                type="button"
+                                data-panel="missionPanel"
+                            >
+                                <span class="briefing-tab-icon">
+                                    ✈
+                                </span>
+
+                                <span class="briefing-tab-label">
+                                    Aeronave
+                                </span>
+                            </button>
+
+
+                            <button
+                                class="briefing-tab"
+                                type="button"
+                                data-panel="fuelPanel"
+                            >
+                                <span class="briefing-tab-icon">
+                                    ⛽
+                                </span>
+
+                                <span class="briefing-tab-label">
+                                    Combustível
+                                </span>
+                            </button>
+
+
+                            <button
+                                class="briefing-tab"
+                                type="button"
+                                data-panel="weightPanel"
+                            >
+                                <span class="briefing-tab-icon">
+                                    ⚖
+                                </span>
+
+                                <span class="briefing-tab-label">
+                                    Peso
+                                </span>
+                            </button>
+
+
+                            <button
+                                class="briefing-tab"
+                                type="button"
+                                data-panel="dashboardPanel"
+                            >
+                                <span class="briefing-tab-icon">
+                                    ▣
+                                </span>
+
+                                <span class="briefing-tab-label">
+                                    Dashboard
+                                </span>
+                            </button>
+
+                        </div>
+
+
+                        <button
+                            id="briefingNext"
+                            class="briefing-arrow"
+                            type="button"
+                        >
+                            →
+                        </button>
+
+                    </div>
+
+
+                    <!-- ================================== -->
+                    <!--          BRIEFING PAGES            -->
+                    <!-- ================================== -->
+
+                    <div class="briefing-pages">
+
+
+                        <!-- ================================== -->
+                        <!--              ROTA                  -->
+                        <!-- ================================== -->
+
+                        <section id="routePanel" class="briefing-page active">
+                            <h2 class="card-title">ROTA</h2>
+
+                            <div class="route-schedule">
+                                <label class="field-label" for="etd">ETD <span class="schedule-timezone">UTC</span></label>
+                                <div class="route-schedule-controls">
+                                    <input id="date" class="field-control" type="date" aria-label="Data de partida (UTC)">
+                                    <input id="etd" class="field-control" type="time" value="00:00" aria-label="Hora de partida (UTC)">
+                                    <button id="etdNow" class="schedule-now" type="button" title="Usar data e hora atuais em UTC">Agora</button>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label" for="flightLevel">Nível de Voo</label>
+                                <select id="flightLevel" class="field-control"><option>FL100</option></select>
+                            </div>
+
+                            <div class="route-selector">
+                                <div class="autocomplete">
+                                    <label class="field-label" for="departure">Origem</label>
+                                    <input id="departure" class="airport-input" type="text" maxlength="4" placeholder="ICAO" autocomplete="off">
+                                    <div id="departure-list" class="autocomplete-list"></div>
+                                </div>
+                                <button class="swap-route" tabindex="-1" type="button" aria-label="Inverter origem e destino">⇄</button>
+                                <div class="autocomplete">
+                                    <label class="field-label" for="destination">Destino</label>
+                                    <input id="destination" class="airport-input" type="text" maxlength="4" placeholder="ICAO" autocomplete="off">
+                                    <div id="destination-list" class="autocomplete-list"></div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label" for="alternate">Alternativa</label>
+                                <div class="autocomplete">
+                                    <input id="alternate" class="field-control" type="text" maxlength="4" placeholder="ICAO" autocomplete="off">
+                                    <div id="alternate-list" class="autocomplete-list"></div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label" for="eta">ETA <span class="schedule-timezone">UTC</span></label>
+                                <input id="eta" class="field-control" type="time" readonly>
+                            </div>
+
+                            <div id="waypointPanel"></div>
+                        </section>
+
+
+                        <!-- ================================== -->
+                        <!--            AERONAVE                -->
+                        <!-- ================================== -->
+
+                        <section
+                            id="missionPanel"
+                            class="briefing-page mission card"
+                        >
+
+                            <h2 class="card-title">
+                                AERONAVE
+                            </h2>
+
+
+                            <details id="aircraftGallery" class="aircraft-gallery" open>
+                                <summary class="aircraft-summary">
+                                    <img id="selectedAircraftImage" alt="" class="aircraft-summary-image">
+                                    <span class="aircraft-summary-info">
+                                        <span class="field-label">Aeronave selecionada</span>
+                                        <strong id="selectedAircraftModel"></strong>
+                                        <span id="selectedAircraftRegistration"></span>
+                                    </span>
+                                    <span class="aircraft-gallery-action"></span>
+                                </summary>
+                            <fieldset class="aircraft-picker">
+                                <legend class="field-label">Selecione a aeronave</legend>
+                                <div id="aircraftCards" class="aircraft-grid"></div>
+                            </fieldset>
+                            </details>
+
+
+                            <div class="field">
+
+                                <span class="field-label">
+                                    Prefixo
+                                </span>
+
+                                <select
+                                    id="registration"
+                                    class="field-control"
+                                >
+                                    <option>FAB2317</option>
+                                </select>
+
+                            </div>
+
+
+                        </section>
+
+
+                        <!-- ================================== -->
+                        <!--           COMBUSTÍVEL              -->
+                        <!-- ================================== -->
+
+                        <section
+                            id="fuelPanel"
+                            class="briefing-page"
+                        >
+
+                            <h2 class="card-title">
+                                FUEL PLANNING
+                            </h2>
+
+                            <div class="fuel-unit-selector">
+
+                                <button
+                                    class="fuel-unit-button active"
+                                    data-fuel-unit="LB"
+                                >
+                                    LB
+                                </button>
+
+                                <button
+                                    class="fuel-unit-button"
+                                    data-fuel-unit="KG"
+                                >
+                                    KG
+                                </button>
+
+                                <button
+                                    class="fuel-unit-button"
+                                    data-fuel-unit="L"
+                                >
+                                    L
+                                </button>
+
+                            </div>
+
+                            <button
+                                id="restoreAutomaticFuel"
+                                class="restore-automatic-fuel"
+                                type="button"
+                            >
+                                Restaurar valores automáticos
+                            </button>
+
+                            <div class="field">
+
+                                <span class="field-label">
+                                    Taxi Fuel
+                                </span>
+
+                                <div
+                                    id="taxiFuel"
+                                    class="stepper"
+                                >
+
+                                    <button class="stepper-minus">
+                                        ◀
+                                    </button>
+
+                                    <span class="stepper-value">
+                                        30
+                                    </span>
+
+                                    <span class="stepper-unit">
+                                        LB
+                                    </span>
+
+                                    <button class="stepper-plus">
+                                        ▶
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <span class="field-label">
+                                    Flight Fuel
+                                </span>
+
+                                <span id="flightFuel">
+                                    0 LB
+                                </span>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <span class="field-label">
+                                    Procedure Fuel
+                                </span>
+
+                                <div
+                                    id="procedureFuel"
+                                    class="stepper"
+                                >
+
+                                    <button class="stepper-minus">
+                                        ◀
+                                    </button>
+
+                                    <span class="stepper-value">
+                                        30
+                                    </span>
+
+                                    <span class="stepper-unit">
+                                        LB
+                                    </span>
+
+                                    <button class="stepper-plus">
+                                        ▶
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <span class="field-label">
+                                    Alternate Fuel
+                                </span>
+
+                                <span id="alternateFuel">
+                                    0 LB
+                                </span>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <span class="field-label">
+                                    Reserve Fuel
+                                </span>
+
+                                <div
+                                    id="reserveFuel"
+                                    class="stepper"
+                                >
+
+                                    <button class="stepper-minus">
+                                        ◀
+                                    </button>
+
+                                    <span class="stepper-value">
+                                        30
+                                    </span>
+
+                                    <span class="stepper-unit">
+                                        LB
+                                    </span>
+
+                                    <button class="stepper-plus">
+                                        ▶
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <span class="field-label">
+                                    Extra Fuel
+                                </span>
+
+                                <div
+                                    id="extraFuel"
+                                    class="stepper"
+                                >
+
+                                    <button class="stepper-minus">
+                                        ◀
+                                    </button>
+
+                                    <span class="stepper-value">
+                                        0
+                                    </span>
+
+                                    <span class="stepper-unit">
+                                        LB
+                                    </span>
+
+                                    <button class="stepper-plus">
+                                        ▶
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <strong>
+                                    Combustível Mínimo
+                                </strong>
+
+                                <strong id="totalFuel">
+                                    0 LB
+                                </strong>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <span class="field-label">
+                                    Fuel On Board
+                                </span>
+
+
+                                <div
+                                    id="fuelOnBoard"
+                                    class="stepper"
+                                >
+
+                                    <button class="stepper-minus">
+                                        ◀
+                                    </button>
+
+                                    <span class="stepper-value">
+                                        3000
+                                    </span>
+
+                                    <span class="stepper-unit">
+                                        LB
+                                    </span>
+
+                                    <button class="stepper-plus">
+                                        ▶
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <strong>
+                                    Previsto no pouso
+                                </strong>
+
+                                <strong id="legLandingFuel">
+                                    0 LB
+                                </strong>
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- ================================== -->
+                        <!--               PESO                 -->
+                        <!-- ================================== -->
+
+                        <section
+                            id="weightPanel"
+                            class="briefing-page"
+                        >
+
+
+                            <section class="weight card">
+
+                                <h2 class="card-title">
+                                    WEIGHT
+                                </h2>
+
+
+                                <div class="field">
+
+                                    <span class="field-label">
+                                        Basic Weight
+                                    </span>
+
+                                    <span
+                                        id="basicWeight"
+                                        class="field-value"
+                                    >
+                                    </span>
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <span class="field-label">
+                                        Crew
+                                    </span>
+
+                                    <span
+                                        id="crewWeight"
+                                        class="field-value"
+                                    >
+                                    </span>
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <span class="field-label">
+                                        Payload
+                                    </span>
+
+                                    <span
+                                        id="payloadWeight"
+                                        class="field-value"
+                                    >
+                                    </span>
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <span class="field-label">
+                                        Fuel
+                                    </span>
+
+                                    <span
+                                        id="fuelWeight"
+                                        class="field-value"
+                                    >
+                                    </span>
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <span class="field-label">
+                                        Takeoff Weight
+                                    </span>
+
+                                    <span
+                                        id="takeoffWeight"
+                                        class="field-value"
+                                    >
+                                    </span>
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <span class="field-label">
+                                        Landing Weight
+                                    </span>
+
+                                    <span
+                                        id="landingWeight"
+                                        class="field-value"
+                                    >
+                                    </span>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- CREW -->
+
+                            <section class="crew card">
+
+                                <div class="panel">
+
+                                    <div class="panel-header">
+
+                                        <h3>
+                                            CREW
+                                        </h3>
+
+                                        <button id="addCrew">
+                                            +
+                                        </button>
+
+                                    </div>
+
+                                    <div id="crewPanel"></div>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- PAYLOAD -->
+
+                            <section class="payload card">
+
+                                <h2 class="card-title">
+                                    PAYLOAD
+                                </h2>
+
+                                <div id="payloadPanel"></div>
+
+                            </section>
+
+                        </section>
+
+
+                        <!-- ================================== -->
+                        <!--             DASHBOARD               -->
+                        <!-- ================================== -->
+
+                        <section
+                            id="dashboardPanel"
+                            class="briefing-page"
+                        >
+
+
+                            
+<section class="dashboard-section dashboard-route">
+    <h2 class="dashboard-section-title">Rota e horários</h2>
+    <div class="dashboard-route-codes">
+
+                                    <span
+                                        id="dashboard-departure"
+                                        class="dashboard-airport"
+                                    >
+                                        ----
+                                    </span>
+
+                                    <span class="dashboard-arrow">
+                                        →
+                                    </span>
+
+                                    <span
+                                        id="dashboard-destination"
+                                        class="dashboard-airport"
+                                    >
+                                        ----
+                                    </span>
+
+                                </div>
+    <p id="dashboard-waypoints" class="dashboard-waypoints" aria-label="Pontos da rota">DCT</p>
+    <div class="dashboard-route-times">
+        <div><span class="dashboard-label">Partida · UTC</span><strong id="dashboard-etd">--:--Z</strong></div>
+        <div><span class="dashboard-label">Chegada · UTC</span><strong id="dashboard-eta">--:--Z</strong></div>
+    </div>
+    <div class="dashboard-row dashboard-row-primary">
+
+                                    <span class="dashboard-label">
+                                        Distância
+                                    </span>
+
+                                    <span id="dashboard-distance" class="dashboard-value">
+                                        0 NM
+                                    </span>
+
+                                </div>
+    <div class="dashboard-row dashboard-row-primary">
+
+                                    <span class="dashboard-label">
+                                        Tempo de Voo
+                                    </span>
+
+                                    <span
+                                        id="dashboard-eet"
+                                        class="dashboard-value"
+                                    >
+                                        00:00
+                                    </span>
+
+                                </div>
+    <div class="dashboard-row">
+
+                                    <span class="dashboard-label">
+                                        Nível de Voo
+                                    </span>
+
+                                    <span
+                                        id="dashboard-flightlevel"
+                                        class="dashboard-value"
+                                    >
+                                        ----
+                                    </span>
+
+                                </div>
+</section>
+<section class="dashboard-section">
+    <h2 class="dashboard-section-title">Aeronave</h2>
+    <div class="dashboard-row dashboard-row-primary">
+
+                                    <span class="dashboard-label">
+                                        Aeronave
+                                    </span>
+
+                                    <span
+                                        id="dashboard-aircraft"
+                                        class="dashboard-value"
+                                    >
+                                        ----
+                                    </span>
+
+                                </div>
+</section>
+<section class="dashboard-section">
+    <h2 class="dashboard-section-title">Combustível e pesos</h2>
+    <div class="dashboard-row dashboard-row-primary">
+
+                                    <span class="dashboard-label">
+                                        Abastecimento Mínimo
+                                    </span>
+
+                                    <span
+                                        id="dashboard-min-fuel"
+                                        class="dashboard-value"
+                                    >
+                                        0 LB
+                                    </span>
+
+                                </div>
+    <div class="dashboard-row dashboard-row-primary">
+
+                                    <span class="dashboard-label">
+                                        Combustível Abastecido
+                                    </span>
+
+                                    <span
+                                        id="dashboard-fuel-on-board"
+                                        class="dashboard-value"
+                                    >
+                                        0 LB
+                                    </span>
+
+                                </div>
+    <h3 class="dashboard-subtitle">Pesos previstos</h3>
+    <div class="dashboard-row dashboard-row-primary">
+
+                                        <span class="dashboard-label">
+                                            Decolagem
+                                        </span>
+
+                                        <span
+                                            id="dashboard-dep-weight"
+                                            class="dashboard-value"
+                                        >
+                                            0 KG
+                                        </span>
+
+                                    </div>
+    <div class="dashboard-row dashboard-row-primary">
+
+                                        <span class="dashboard-label">
+                                            Pouso
+                                        </span>
+
+                                        <span
+                                            id="dashboard-landing-weight"
+                                            class="dashboard-value"
+                                        >
+                                            0 KG
+                                        </span>
+
+                                    </div>
+    <details class="dashboard-weight-details">
+        <summary>Detalhamento dos pesos</summary>
+        <div class="dashboard-row">
+
+                                    <span class="dashboard-label">
+                                        PBO (Peso Básico + Tripulação)
+                                    </span>
+
+                                    <span
+                                        id="dashboard-pbo"
+                                        class="dashboard-value"
+                                    >
+                                        0 KG
+                                    </span>
+
+                                </div>
+        <div class="dashboard-row">
+
+                                    <span class="dashboard-label">
+                                        Payload
+                                    </span>
+
+                                    <span
+                                        id="dashboard-payload"
+                                        class="dashboard-value"
+                                    >
+                                        0 KG
+                                    </span>
+
+                                </div>
+        <div class="dashboard-row">
+
+                                        <span class="dashboard-label">
+                                            Rampa
+                                        </span>
+
+                                        <span
+                                            id="dashboard-ramp-weight"
+                                            class="dashboard-value"
+                                        >
+                                            0 KG
+                                        </span>
+
+                                    </div>
+        <div class="dashboard-row">
+
+                                        <span class="dashboard-label">
+                                            Zero Combustível
+                                        </span>
+
+                                        <span
+                                            id="dashboard-zfw"
+                                            class="dashboard-value"
+                                        >
+                                            0 KG
+                                        </span>
+
+                                    </div>
+    </details>
+</section>
+
+<!-- METEOROLOGIA -->
+
+                            <section class="dashboard-section">
+
+                                <h2 class="dashboard-section-title">
+                                    Meteorologia
+                                </h2>
+
+                                <div id="weatherBriefing">
+                                    <p class="weather-briefing-message">
+                                        Selecione os aeródromos da rota para consultar METAR e TAF.
+                                    </p>
+                                </div>
+
+                            </section>
+
+                        </section>
+
+                    </div>
+
+                </section>
+
+                <section id="notamPage" class="tool-content">
+                    <div class="weather-page-header">
+                        <button id="closeNotams" class="weather-close-button" type="button">← Voltar ao mapa</button>
+                        <h2 class="card-title">NOTAMs</h2>
+                        <button id="refreshNotams" type="button">↻ Atualizar</button>
+                    </div>
+                    <p class="notam-source">AISWEB · Português · Todas as pernas · Cache de até 1 minuto</p>
+                    <div id="notamAirports"></div>
+                </section>
+
+                <section id="fullBriefingPanel" class="tool-content">
+                    <div class="weather-page-header">
+                        <button id="closeFullBriefing" class="weather-close-button" type="button">← Voltar ao mapa</button>
+                        <h2 class="card-title">Full Briefing</h2>
+                    </div>
+                    <article id="fullBriefingContent" class="full-briefing-content"></article>
+                </section>
+
+
+                <!-- ================================== -->
+                <!--           METEOROLOGIA              -->
+                <!-- ================================== -->
+
+                <section
+                    id="weatherPanel"
+                    class="tool-content"
+                >
+
+                    <div class="weather-page-header">
+                        <button
+                            id="closeWeather"
+                            class="weather-close-button"
+                            type="button"
+                        >
+                            ← Voltar ao mapa
+                        </button>
+
+                        <h2 class="card-title">
+                            Meteorologia
+                        </h2>
+                    </div>
+
+                    <div class="weather-tabs" role="tablist">
+                        <button
+                            class="weather-tab active"
+                            type="button"
+                            data-weather-page="weatherSummaryPage"
+                        >
+                            Resumo
+                        </button>
+
+                        <button
+                            class="weather-tab"
+                            type="button"
+                            data-weather-page="redemetPdfPage"
+                        >
+                            PDF REDEMET
+                        </button>
+                        <button
+                            class="weather-tab"
+                            type="button"
+                            data-weather-page="grametPage"
+                        >
+                            GRAMET
+                        </button>
+                    </div>
+
+                    <section
+                        id="weatherSummaryPage"
+                        class="weather-page active"
+                    >
+                        <div id="weatherToolBriefing">
+                            <p class="weather-briefing-message">
+                                Selecione os aeródromos da rota para consultar METAR e TAF.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section
+                        id="redemetPdfPage"
+                        class="weather-page"
+                    >
+                        <p class="weather-briefing-message">Abra a REDEMET com os dados de cada perna e baixe o PDF na página que será aberta.</p>
+                        <p class="weather-briefing-message">Solicita METAR, TAF, SIGWX, vento e imagem de satélite, com as cinco FIR brasileiras.</p>
+                        <div id="redemetPdfCards">
+                            <p id="redemetPdfAirports" class="weather-briefing-message"></p>
+                            <p id="redemetPdfStatus" class="weather-briefing-message"></p>
+                            <a id="redemetPdfLink" class="redemet-pdf-link" target="_blank" rel="noopener noreferrer">Abrir na REDEMET ↗</a>
+                        </div>
+                    </section>
+
+                    <section
+                        id="grametPage"
+                        class="weather-page"
+                    >
+                        <p class="gramet-description">
+                            Corte vertical previsto ao longo da rota, baseado no modelo NOAA GFS.
+                        </p>
+
+                        <dl class="gramet-details">
+                            <div>
+                                <dt>Rota</dt>
+                                <dd id="grametRoute">---</dd>
+                            </div>
+                            <div>
+                                <dt>Nível selecionado</dt>
+                                <dd id="grametFlightLevel">---</dd>
+                            </div>
+                        </dl>
+
+                        <button
+                            id="updateGramet"
+                            class="gramet-update-button"
+                            type="button"
+                        >
+                            Atualizar GRAMET
+                        </button>
+
+                        <p
+                            id="grametStatus"
+                            class="gramet-status"
+                            role="status"
+                        >
+                            Defina origem, destino, data/hora UTC e nível de voo.
+                        </p>
+
+                        <div class="gramet-chart-wrap">
+                            <canvas
+                                id="grametCanvas"
+                                class="gramet-chart"
+                                aria-label="GRAMET vertical previsto para a rota"
+                            ></canvas>
+                        </div>
+
+                        <p class="gramet-disclaimer">
+                            Produto de previsão para planejamento. Não substitui briefing meteorológico operacional.
+                        </p>
+                    </section>
+
+                </section>
+
+
+                <!-- ================================== -->
+                <!--           PERFORMANCE              -->
+                <!-- ================================== -->
+
+                <section
+                    id="performancePanel"
+                    class="tool-content"
+                >
+
+                    <section class="performance card">
+
+                        <h2 class="card-title">
+                            Performance
+                        </h2>
+
+                    </section>
+
+                </section>
+
+
+            </aside>
+
+        </main>
+
+    </div>
+
+    <div
+        id="appStatus"
+        class="app-status"
+        role="status"
+        aria-live="polite"
+        hidden
+    ></div>
+
+    <!-- PDF.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- APP: ponto único de entrada -->
+    <script type="module" src="/js/app.js"></script>
+
+</body>
+
+</html>

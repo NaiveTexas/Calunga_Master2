@@ -1,0 +1,20 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { calculateWaypointPassages } from "../js/core/routePlanning.js";
+import { calculateDistance } from "../js/utils/helpers.js";
+test("passages accumulate route distance, previous procedures and outbound speeds across midnight", () => {
+    const origin = { position: { latitude: 0, longitude: 0 } };
+    const a = { type: "AIRPORT", icao: "TEST", position: { latitude: 0, longitude: 1 }, procedure: true, outboundSpeed: 120 };
+    const b = { ident: "FIX", position: { latitude: 1, longitude: 1 } };
+    const leg = { route: { origin, waypoints: [a, b] }, schedule: { date: "2026-12-31", etd: "23:50" } };
+    const result = calculateWaypointPassages(leg, { cruiseSpeed: 180, procedureTime: 10 });
+    const first = calculateDistance(origin, a);
+    const second = calculateDistance(a, b);
+    assert.equal(result[1].distance, first + second);
+    const departure = Date.parse("2026-12-31T23:50:00Z");
+    assert.equal(result[0].time, new Date(Math.round((departure + first / 180 * 3600000) / 60000) * 60000).toISOString());
+    assert.equal(result[1].time, new Date(Math.round((departure + (first / 180 + 10 / 60 + second / 120) * 3600000) / 60000) * 60000).toISOString());
+    assert.match(result[1].time, /^2027-01-01/);
+    leg.route.origin = null;
+    assert.equal(calculateWaypointPassages(leg, { cruiseSpeed: 180 })[0].time, null);
+});

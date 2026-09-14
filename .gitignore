@@ -1,0 +1,11 @@
+backend/.env
+node_modules/
+.npm-cache/
+dist/
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.log

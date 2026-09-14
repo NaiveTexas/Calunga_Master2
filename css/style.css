@@ -1,0 +1,2102 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#111827;
+    --surface:#1F2937;
+    --surface-hover:#263548;
+    --border:#374151;
+    --primary:#3B82F6;
+    --text:#F9FAFB;
+    --text-secondary:#9CA3AF;
+    --radius:14px;
+    --gap:20px;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Segoe UI, sans-serif;
+    min-height:100vh;
+}
+
+.app-status {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2000;
+    max-width: 420px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+}
+
+.app-status[data-state="error"] {
+    border-color: #dc2626;
+    color: #fecaca;
+}
+
+.mission-bar {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 64px;
+
+    z-index: 900;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 24px;
+
+    background: rgba(15, 23, 42, 0.92);
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.flight-route {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 28px;
+
+}
+
+.route {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+}
+
+.times {
+    display: flex;
+    gap: 40px;
+    color: var(--text-secondary);
+    font-size: .9rem;
+}
+
+.dep,
+.arr{
+    letter-spacing:2px;
+}
+
+.arrow{
+    color:var(--primary);
+    font-weight:400;
+}
+
+.card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px;
+}
+
+.card-title{
+    margin-bottom:24px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--border);
+    font-size:1rem;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+.route-selector{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:24px;
+}
+
+.autocomplete{
+    position:relative;
+    width: 150px;
+}
+
+.autocomplete .field-control{
+    width:100%;
+}
+
+.airport-input{
+    width:100%;
+    height:42px;
+    padding:0 12px;
+    background:var(--bg);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:1rem;
+}
+
+.airport-input:focus{
+    outline:none;
+    border-color:var(--primary);
+}
+
+.autocomplete-list{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    margin-top:4px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    display:none;
+    overflow:hidden;
+    z-index:100;
+}
+
+.autocomplete-item{
+    padding:10px 12px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.autocomplete-item:hover{
+    background:var(--surface-hover);
+}
+
+.autocomplete-item.selected{
+    background: var(--primary);
+    color: white;
+}
+
+.swap-route{
+    width:42px;
+    height:42px;
+    flex-shrink:0;
+    border:none;
+    border-radius:8px;
+    background:var(--surface);
+    color:var(--primary);
+    font-size:1.1rem;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.swap-route:hover{
+    background:var(--surface-hover);
+}
+
+.field{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    padding:10px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.field-label{
+    color:var(--text-secondary);
+    font-size:.9rem;
+    white-space:nowrap;
+}
+
+.field-value{
+    font-weight:600;
+    color:var(--text);
+}
+
+.field-control{
+    width:150px;
+    height:38px;
+    padding:0 10px;
+    background:var(--bg);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:.9rem;
+    transition:.2s;
+}
+
+.field-control:hover{
+    border-color:var(--primary);
+}
+
+.field-control:focus{
+    outline:none;
+    border-color:var(--primary);
+}
+
+.route-schedule {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.route-schedule > .field-label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.schedule-timezone {
+    margin-left: 6px;
+    font-size: .75rem;
+}
+
+.route-schedule-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.route-schedule-controls .field-control {
+    color: var(--primary);
+    color-scheme: dark;
+    min-width: 0;
+}
+
+.route-schedule-controls input[type="date"] {
+    flex: 1 1 150px;
+}
+
+.route-schedule-controls input[type="time"] {
+    width: 112px;
+}
+
+.schedule-now {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.schedule-now:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+}
+
+.schedule-now:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+#routePanel .card-title {
+    margin-bottom: 20px;
+}
+
+#routePanel .route-schedule,
+#routePanel .leg-editor > .field,
+#routePanel .route-selector {
+    margin: 0 0 20px;
+    padding: 0;
+    border: 0;
+}
+
+#routePanel .leg-editor > .field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+
+#routePanel .field-label {
+    display: block;
+    font-size: .85rem;
+    line-height: 1.4;
+}
+
+#routePanel .autocomplete {
+    width: 100%;
+    min-width: 0;
+}
+
+#routePanel .field-control,
+#routePanel .airport-input {
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    font-size: .95rem;
+    color-scheme: dark;
+    box-sizing: border-box;
+}
+
+#routePanel .route-selector {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
+    align-items: end;
+    gap: 8px;
+}
+
+#routePanel .route-selector .field-label {
+    margin-bottom: 8px;
+}
+
+#routePanel .swap-route {
+    width: 32px;
+    height: 40px;
+}
+
+#routePanel .route-schedule-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#routePanel .route-schedule-controls input[type="date"] {
+    flex: 1 1 145px;
+    width: 145px;
+}
+
+#routePanel .route-schedule-controls input[type="time"] {
+    flex: 1 1 100px;
+    width: 100px;
+}
+
+#routePanel .schedule-now {
+    height: 40px;
+    flex: 0 0 auto;
+}
+
+#routePanel #eta {
+    color: var(--text-secondary);
+}
+
+.aircraft-picker {
+    min-width: 0;
+    margin: 0 0 20px;
+    padding: 0;
+    border: 0;
+}
+
+.aircraft-picker legend {
+    margin-bottom: 12px;
+}
+
+.aircraft-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+    gap: 12px;
+}
+
+.aircraft-choice {
+    position: relative;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.aircraft-choice > input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.aircraft-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 10px 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--text);
+    text-align: center;
+    transition: border-color .2s, background .2s;
+}
+
+.aircraft-card-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+.aircraft-card-description {
+    color: var(--text-secondary);
+    font-size: .8rem;
+}
+
+.aircraft-choice:hover .aircraft-card {
+    border-color: var(--primary);
+}
+
+.aircraft-choice > input:checked + .aircraft-card {
+    border-color: var(--primary);
+    background: var(--surface-hover);
+}
+
+.aircraft-choice > input:checked + .aircraft-card strong {
+    color: var(--primary);
+}
+
+.aircraft-choice > input:focus-visible + .aircraft-card {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.aircraft-choice:has(> input:disabled) {
+    cursor: not-allowed;
+}
+
+.aircraft-choice > input:disabled + .aircraft-card {
+    border-color: var(--border);
+    opacity: .65;
+}
+
+.aircraft-card-status {
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: .75rem;
+}
+
+.aircraft-gallery {
+    margin-bottom: 20px;
+}
+
+.aircraft-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    cursor: pointer;
+    list-style: none;
+}
+
+.aircraft-summary::-webkit-details-marker { display: none; }
+.aircraft-summary:focus-visible { outline: 2px solid var(--primary); }
+.aircraft-summary-image { width: 80px; height: 50px; object-fit: contain; border-radius: 6px; }
+.aircraft-summary-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+.aircraft-summary-info strong { font-size: .95rem; }
+#selectedAircraftRegistration { color: var(--primary); font-weight: 600; }
+.aircraft-gallery-action { color: var(--primary); font-size: .8rem; }
+.aircraft-gallery-action::after { content: "Alterar ▾"; }
+.aircraft-gallery[open] .aircraft-gallery-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 10px;
+    border-radius: 6px;
+    background: var(--primary);
+    color: #fff;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, .25);
+}
+.aircraft-gallery[open] .aircraft-gallery-action::after { content: "CONFIRMAR"; }
+.aircraft-gallery[open] .aircraft-summary:hover .aircraft-gallery-action {
+    background: #2563eb;
+}
+.aircraft-gallery[open] .aircraft-picker { margin-top: 16px; }
+
+.airport-selected-name {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-secondary);
+    font-size: .8rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+.airport-selected-name[hidden] { display: none; }
+#routePanel .route-selector { align-items: start; }
+#routePanel .swap-route { margin-top: 27px; }
+
+#dashboardPanel .dashboard-route-times > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+#dashboardPanel .dashboard-route-times > div:last-child { text-align: right; }
+#dashboardPanel .dashboard-route-times strong { color: var(--text); font-size: 1.05rem; }
+#dashboardPanel .dashboard-row-primary .dashboard-value { font-size: 1.1rem; font-weight: 700; }
+#dashboardPanel .dashboard-row { gap: 16px; }
+#dashboardPanel .dashboard-value { text-align: right; }
+#dashboardPanel .dashboard-section-title { color: var(--text); }
+.dashboard-weight-details { margin-top: 16px; }
+.dashboard-weight-details > summary { color: var(--text-secondary); cursor: pointer; padding: 10px 0; font-size: .85rem; }
+.dashboard-weight-details > summary:focus-visible { outline: 2px solid var(--primary); }
+
+@media (max-width: 400px) {
+    .aircraft-summary { flex-wrap: wrap; }
+    .aircraft-summary-image { width: 56px; }
+}
+
+.stepper{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+}
+
+.restore-automatic-fuel {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.restore-automatic-fuel:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.stepper-value{
+    min-width:42px;
+    text-align:center;
+    font-size:1rem;
+    font-weight:600;
+    color: var(--text);
+}
+
+.stepper-unit{
+    width:22px;
+    font-size:.85rem;
+    color:var(--text-secondary);
+}
+
+.stepper-plus,
+.stepper-minus{
+    pointer-events:auto;
+}
+
+.panel-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:16px;
+
+}
+
+.crew-row{
+
+    display:grid;
+
+    grid-template-columns:1fr 80px 30px 32px;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 12px;
+
+    margin-bottom:8px;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    background:var(--surface);
+
+}
+
+.crew-row select{
+
+    flex:1;
+
+    height:38px;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:8px;
+
+    padding:0 10px;
+
+}
+
+.crew-weight{
+
+    width:100%;
+
+    height:38px;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:8px;
+
+    text-align:center;
+
+}
+
+#addCrew{
+
+    width:34px;
+
+    height:34px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:var(--primary);
+
+    color:white;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+}
+
+#addCrew:hover{
+
+    opacity:.9;
+
+}
+
+.crew-remove{
+
+    width:28px;
+
+    height:28px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:transparent;
+
+    color:var(--text-secondary);
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.crew-remove:hover{
+
+    background:#dc2626;
+
+    color:white;
+
+}
+
+.payload-modes{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-bottom:16px;
+
+}
+
+.payload-mode{
+
+    flex:1;
+
+    height:34px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:var(--bg);
+
+    color:var(--text-secondary);
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.payload-mode:hover{
+
+    background:var(--surface-hover);
+
+}
+
+.payload-mode.selected{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+.payload-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:20px;
+
+    margin-bottom:10px;
+
+}
+
+.payload-header button{
+
+    width:32px;
+
+    height:32px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:1.1rem;
+
+}
+
+.payload-header h4{
+
+    margin:0;
+
+}
+
+.payload-total{
+
+    color:var(--text-secondary);
+
+    font-size:.9rem;
+
+    font-weight:600;
+
+}
+
+.payload-add{
+
+    width:100%;
+
+    height:40px;
+
+    margin-top:10px;
+
+    border:1px dashed var(--border);
+
+    border-radius:10px;
+
+    background:transparent;
+
+    color:var(--text-secondary);
+
+    font-size:.9rem;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.payload-add:hover{
+
+    border-color:var(--primary);
+
+    color:var(--primary);
+
+    background:rgba(37,99,235,.08);
+
+}
+
+.payload-unit{
+
+    width:24px;
+
+    text-align:center;
+
+    color:var(--text-secondary);
+
+    font-size:.85rem;
+
+}
+
+.performance,
+.weight{
+    min-height:180px;
+}
+
+#mapPanel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#mapPanel .ol-viewport {
+    position: absolute !important;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/*==========================================*/
+/*              DASHBOARD                   */
+/*==========================================*/
+
+.dashboard-section {
+
+    padding: 18px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.dashboard-section:first-child {
+
+    padding-top: 0;
+
+}
+
+.dashboard-section:last-child {
+
+    border-bottom: none;
+
+}
+
+
+/*==========================================*/
+/*              ROTA                        */
+/*==========================================*/
+
+.dashboard-route {
+
+    text-align: center;
+
+}
+
+.dashboard-route-codes {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+}
+
+.dashboard-airport {
+
+    font-size: 1.35rem;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+}
+
+.dashboard-arrow {
+
+    color: var(--primary);
+
+    font-size: 1.2rem;
+
+}
+
+.dashboard-route-times {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 70px;
+
+    margin-top: 6px;
+
+    color: var(--text-secondary);
+
+    font-size: .85rem;
+
+}
+
+
+/*==========================================*/
+/*              SEÇÕES                      */
+/*==========================================*/
+
+.dashboard-section-title {
+
+    margin: 0 0 12px;
+
+    color: var(--text);
+
+    font-size: .75rem;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+
+}
+
+.dashboard-subsection {
+
+    margin-top: 18px;
+
+    padding-top: 12px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+.dashboard-subtitle {
+
+    margin: 0 0 6px;
+
+    color: var(--text-secondary);
+
+    font-size: .7rem;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+}
+
+
+/*==========================================*/
+/*              LINHAS                      */
+/*==========================================*/
+
+.dashboard-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    min-height: 34px;
+
+    padding: 6px 0;
+
+}
+
+.dashboard-label {
+
+    color: var(--text-secondary);
+
+    font-size: .85rem;
+
+}
+
+.dashboard-value {
+
+    color: var(--text);
+
+    font-size: .9rem;
+
+    font-weight: 600;
+
+    text-align: right;
+
+}
+
+/*==========================================*/
+/*              APP SHELL                   */
+/*==========================================*/
+
+.app {
+
+    width: 100vw;
+
+    height: 100vh;
+
+    display: flex;
+
+    overflow: hidden;
+
+}
+
+
+/*==========================================*/
+/*              SIDEBAR                     */
+/*==========================================*/
+
+.sidebar {
+
+    width: 64px;
+
+    height: 100%;
+
+    flex-shrink: 0;
+
+    background: var(--surface);
+
+    border-right: 1px solid var(--border);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+}
+
+
+.sidebar-top {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 12px 0;
+
+}
+
+
+.sidebar-button {
+
+    width: 44px;
+
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+    transition:
+        background .2s,
+        color .2s;
+
+}
+
+
+.sidebar-button:hover {
+
+    background: var(--surface-hover);
+
+    color: var(--text);
+
+}
+
+.sidebar-button svg {
+
+    width: 21px;
+
+    height: 21px;
+
+    stroke-width: 1.8;
+
+}
+
+
+/*==========================================*/
+/*              APP MAIN                    */
+/*==========================================*/
+
+.app-main {
+
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/*==========================================*/
+/*              MAP AREA                    */
+/*==========================================*/
+
+.map-area {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: var(--bg);
+
+}
+
+.weather-briefing-message {
+    color: var(--text-secondary);
+    font-size: .85rem;
+}
+
+#weatherBriefing[data-state="error"] .weather-briefing-message {
+    color: #fecaca;
+}
+
+.weather-airport {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+}
+
+.weather-airport:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+.weather-airport h3 {
+    margin-bottom: 10px;
+    font-size: .85rem;
+}
+
+.weather-airport strong {
+    display: block;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: .7rem;
+    letter-spacing: .08em;
+}
+
+.weather-airport pre {
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    color: var(--text);
+    font: .75rem/1.45 ui-monospace, "Cascadia Code", monospace;
+}
+
+.enrc-controls {
+    position: absolute;
+    top: 76px;
+    right: 16px;
+    z-index: 10;
+    display: flex;
+    gap: 6px;
+}
+
+.enrc-control {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: .75rem;
+    font-weight: 600;
+}
+
+.enrc-control:hover,
+.enrc-control.active {
+    border-color: var(--primary);
+    color: var(--text);
+}
+
+.enrc-control.active {
+    background: var(--primary);
+}
+
+.enrc-control:disabled {
+    cursor: default;
+    opacity: .5;
+}
+
+.enrc-zoom-notice {
+    position: absolute;
+    top: 124px;
+    right: 16px;
+    z-index: 10;
+    max-width: 240px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(17, 24, 39, .92);
+    color: var(--text-secondary);
+    font-size: .8rem;
+}
+
+
+.map-body {
+
+    width: 100%;
+
+    height: 100%;
+
+}
+
+
+/*==========================================*/
+/*              TOOL PANEL                  */
+/*==========================================*/
+
+.tool-panel {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 450px;
+
+    height: 100%;
+
+    background: var(--surface);
+
+    border-right: 1px solid var(--border);
+
+    transform: translateX(-100%);
+
+    transition: transform .2s ease;
+
+    z-index: 1000;
+
+    overflow-y: auto;
+
+    padding: 20px;
+
+}
+
+
+.tool-panel.open {
+
+    transform: translateX(0);
+
+}
+
+.tool-panel .mission {
+
+    margin: 0;
+
+    min-height: auto;
+
+}
+
+/*==========================================*/
+/*             TOOL CONTENT                 */
+/*==========================================*/
+
+.tool-content {
+
+    display: none;
+
+}
+
+
+.tool-content.active {
+
+    display: block;
+
+}
+
+.weather-workspace {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1500;
+    overflow-y: auto;
+    padding: 28px;
+    background: var(--bg);
+}
+
+.weather-workspace.active {
+    display: block;
+}
+
+.weather-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.weather-page-header .card-title {
+    margin: 0;
+}
+
+.weather-workspace > .weather-tabs,
+.weather-workspace > .weather-page {
+    width: min(1180px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.weather-close-button {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.full-briefing-content {
+    width: min(900px, 100%);
+    margin: 28px auto;
+}
+
+.full-briefing-content section {
+    margin: 18px 0;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+}
+
+.full-briefing-content h1,
+.full-briefing-content h2,
+.full-briefing-content h3 { margin-top: 0; }
+
+.sidebar-button.active {
+
+    background: var(--primary);
+
+    color: white;
+
+}
+
+/*==========================================*/
+/*              METEOROLOGIA                */
+/*==========================================*/
+
+.weather-tabs {
+    display: flex;
+    gap: 8px;
+    margin: 16px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.weather-tab {
+    flex: 1;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.weather-tab.active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+}
+
+.weather-page {
+    display: none;
+}
+
+.weather-page.active {
+    display: block;
+}
+
+.gramet-description,
+.gramet-disclaimer {
+    color: var(--text-secondary);
+    font-size: .8rem;
+    line-height: 1.45;
+}
+
+.gramet-details {
+    margin: 16px 0;
+}
+
+.gramet-details div {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.gramet-details dt {
+    color: var(--text-secondary);
+    font-size: .72rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.gramet-details dd {
+    margin: 4px 0 0;
+    color: var(--text);
+    font: .8rem/1.4 ui-monospace, "Cascadia Code", monospace;
+    overflow-wrap: anywhere;
+}
+
+.gramet-update-button {
+    width: 100%;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.gramet-status {
+    min-height: 20px;
+    margin: 12px 0;
+    color: var(--text-secondary);
+    font-size: .78rem;
+}
+
+.gramet-status[data-state="error"] {
+    color: #fecaca;
+}
+
+.gramet-status[data-state="success"] {
+    color: #a7f3d0;
+}
+
+.gramet-chart-wrap {
+    min-height: 610px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #07131d;
+}
+
+.gramet-chart {
+    display: block;
+    min-width: 360px;
+    width: 100%;
+}
+
+.gramet-disclaimer {
+    margin-top: 12px;
+}
+
+/*==========================================*/
+/*              ROUTE POINTS                */
+/*==========================================*/
+
+#waypointPanel {
+    margin-top: 20px;
+}
+
+
+.route-point {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 38px;
+
+    padding: 8px 10px 8px 28px;
+
+    margin-bottom: 4px;
+
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+
+/* Ponto */
+
+.route-point::before {
+    content: "";
+
+    position: absolute;
+
+    left: 10px;
+    top: 50%;
+
+    width: 6px;
+    height: 6px;
+
+    transform: translateY(-50%);
+
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+
+    background: var(--bg);
+}
+
+
+/* Identificador */
+
+.route-point strong {
+    margin: 0;
+
+    color: var(--text);
+
+    font-size: .85rem;
+    font-weight: 600;
+
+    letter-spacing: .06em;
+}
+
+
+/* Tipo */
+
+.route-point span {
+    margin-left: 10px;
+
+    color: var(--text-secondary);
+
+    font-size: .7rem;
+    font-weight: 400;
+
+    letter-spacing: .04em;
+}
+
+
+/* Remover */
+
+.route-point button {
+    margin-left: auto;
+
+    width: 24px;
+    height: 24px;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    font-size: .8rem;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+
+.route-point button:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+}
+
+.route-point.dragging {
+    opacity: 0.4;
+}
+
+/*==========================================*/
+/*          ADD ROUTE POINT                 */
+/*==========================================*/
+
+#waypointPanel > button {
+    width: 100%;
+
+    height: 38px;
+
+    margin-top: 8px;
+
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    font-size: .85rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+
+#waypointPanel > button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--surface-hover);
+}
+
+/*==========================================*/
+/*          WAYPOINT SEARCH                 */
+/*==========================================*/
+
+#waypointPanel input {
+    width: 100%;
+    height: 38px;
+
+    box-sizing: border-box;
+
+    padding: 0 10px;
+
+    background: var(--bg) !important;
+    color: var(--text) !important;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: .85rem;
+
+    outline: none;
+}
+
+
+#waypointPanel input::placeholder {
+    color: var(--text-secondary);
+    opacity: 1;
+}
+
+
+#waypointPanel input:focus {
+    border-color: var(--primary);
+}
+
+.waypoint-search {
+    width: 100%;
+}
+
+
+.waypoint-search input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.waypoint-results {
+    width: 100%;
+    margin-top: 4px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+}
+
+
+.waypoint-results button {
+
+    width: 100%;
+
+    padding: 10px 12px;
+
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 0.9rem;
+
+    text-align: left;
+
+    cursor: pointer;
+
+}
+
+
+.waypoint-results button:hover {
+
+    background: var(--surface-hover);
+
+}
+
+
+.waypoint-results button:last-child {
+
+    border-bottom: none;
+
+}
+
+/*BRIEFING*/
+
+.briefing-page {
+    display: none;
+}
+
+.briefing-page.active {
+    display: block;
+}
+
+.briefing-navigation {
+    display: grid;
+
+    grid-template-columns:
+        32px
+        minmax(0, 1fr)
+        32px;
+
+    align-items: center;
+
+    gap: 8px;
+
+    width: calc(100% + 32px);
+
+    margin-left: -16px;
+
+    box-sizing: border-box;
+
+    padding: 8px 12px;
+
+    margin-bottom: 16px;
+}
+
+
+.briefing-tabs {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 4px;
+
+    min-width: 0;
+
+    overflow: hidden;
+}
+
+
+.briefing-tab {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 2px;
+
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 8px 6px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+
+.briefing-tab:hover {
+    background: var(--surface-hover);
+
+    color: var(--text);
+}
+
+
+.briefing-tab.active {
+    background: var(--surface-hover);
+
+    color: var(--text);
+
+    transform: none;
+}
+
+
+.briefing-tab-icon {
+    font-size: 18px;
+
+    line-height: 1;
+
+    margin-bottom: 5px;
+}
+
+
+.briefing-tab-label {
+    font-size: 12px;
+
+    white-space: nowrap;
+}
+
+
+.briefing-tab.active .briefing-tab-icon {
+    transform: scale(1.15);
+}
+
+
+.briefing-arrow {
+    width: 28px;
+    height: 36px;
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: inherit;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+
+.briefing-arrow:disabled {
+    opacity: 0.25;
+
+    cursor: default;
+}
+
+/* Mission legs share one editor; each leg retains its own planning data. */
+.leg-list { display: grid; gap: 12px; }
+.leg-card { border: 1px solid var(--border); border-radius: 10px; min-width: 0; }
+.leg-card.selected { border-color: var(--primary); }
+.leg-card-header { display: flex; align-items: center; gap: 6px; padding: 6px; }
+.leg-toggle { flex: 1; min-width: 0; text-align: left; white-space: pre-line; line-height: 1.6; padding: 10px; background: transparent; color: var(--text); border: 0; cursor: pointer; }
+.remove-leg { background: transparent; color: var(--text-secondary); border: 0; padding: 6px; cursor: pointer; }
+.leg-editor { padding: 12px; }
+.leg-editor[hidden], .remove-leg[hidden], .leg-fuel-connection[hidden] { display: none; }
+.add-leg { margin-top: 14px; width: 100%; padding: 12px; color: var(--text); background: var(--surface); border: 1px dashed var(--primary); border-radius: 8px; cursor: pointer; }
+.active-leg-context { font-size: 13px; color: var(--text-secondary); padding: 8px 0; }
+.leg-fuel-connection { display: grid; gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.leg-toggle:focus-visible, .add-leg:focus-visible, .remove-leg:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+#etaDate { color: var(--text-secondary); }
+.route-distance { color: var(--text-secondary); font-size: .85rem; margin-top: 6px; }
+#routeTotalDistance { grid-column: 1 / -1; }
+.planning-leg-list { display: grid; gap: 12px; }
+.planning-leg-card { min-width: 0; border: 1px solid var(--border); border-radius: 10px; }
+.planning-leg-card[open] { border-color: var(--primary); }
+.planning-leg-card > summary { padding: 14px; cursor: pointer; color: var(--text); line-height: 1.6; overflow-wrap: anywhere; }
+.planning-leg-card > summary > span { display: block; color: var(--text-secondary); font-size: .8rem; margin-top: 4px; }
+.planning-leg-card > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.planning-leg-body { padding: 0 14px 14px; }
+
+/* Give the dashboard summaries and time columns their own breathing room. */
+#dashboardPanel .planning-leg-card > summary {
+    padding: 18px 20px;
+    font-size: .9rem;
+    line-height: 1.5;
+}
+#dashboardPanel .planning-leg-card > summary > span {
+    margin-top: 8px;
+    font-size: .75rem;
+}
+#dashboardPanel .planning-leg-body { padding: 8px 20px 20px; }
+#dashboardPanel .dashboard-section { padding: 22px 0; }
+#dashboardPanel .dashboard-section:first-child { padding-top: 8px; }
+#dashboardPanel .dashboard-section:last-child { padding-bottom: 0; }
+#dashboardPanel .dashboard-section-title {
+    margin-bottom: 18px;
+    font-size: .7rem;
+    letter-spacing: .8px;
+}
+#dashboardPanel .dashboard-airport { font-size: 1.15rem; letter-spacing: 1px; }
+#dashboardPanel .dashboard-route-times {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+    text-align: left;
+}
+#dashboardPanel .dashboard-route-times strong {
+    font-size: .9rem;
+    line-height: 1.6;
+    font-weight: 600;
+    white-space: pre-line;
+    font-variant-numeric: tabular-nums;
+}
+#dashboardPanel .dashboard-label { font-size: .8rem; }
+#dashboardPanel .dashboard-row { padding: 9px 0; min-height: 38px; }
+#dashboardPanel .dashboard-row-primary .dashboard-value { font-size: .95rem; font-weight: 600; }
+#dashboardPanel .dashboard-value { overflow-wrap: anywhere; }
+#dashboardPanel .dashboard-waypoints {
+    margin: 10px 0 0;
+    color: var(--text-secondary);
+    font-size: .75rem;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+#waypointPanel .route-point-airport { gap: 6px; padding: 5px 6px 5px 22px; flex-wrap: nowrap; }
+.route-point-airport > strong { font-size: .75rem; letter-spacing: 0; flex-shrink: 0; cursor: grab; }
+.route-point-airport > span[hidden] { display: none; }
+.waypoint-speed, .waypoint-procedure { display: inline-flex; align-items: center; gap: 3px; color: var(--text-secondary); font-size: .65rem; white-space: nowrap; }
+.waypoint-speed { margin-left: auto; }
+#waypointPanel .waypoint-speed input {
+    width: 42px; min-width: 0; height: 26px; margin: 0; padding: 2px 3px;
+    font-size: .7rem; text-align: center; appearance: textfield;
+}
+#waypointPanel .waypoint-speed input::-webkit-inner-spin-button { appearance: none; }
+#waypointPanel .waypoint-level { width: 65px; min-width: 0; height: 26px; padding: 2px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text); font-size: .7rem; }
+#waypointPanel .waypoint-procedure input { width: 13px; height: 13px; margin: 0; padding: 0; accent-color: var(--primary); }
+.route-point-airport > button { width: 20px; flex-shrink: 0; margin-left: 0; }
+.enroute-procedure-fuel[hidden] { display: none; }
+#weightPanel > .crew { margin-bottom: 16px; }
+#weightPanel .planning-leg-body > .card { padding: 14px 0; border: 0; box-shadow: none; }
+.mission-storage {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 8px 20px;
+    border-bottom: 1px solid #354354;
+}
+.mission-storage > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.mission-storage button {
+    padding: 6px 10px;
+    border: 1px solid #526174;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+.mission-storage button:hover { background: #354354; }
+.mission-storage small { color: #9caebf; font-size: 12px; }
+.redemet-pdf-link {
+    display: inline-block;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+}
+.redemet-pdf-link:hover { background: var(--surface-hover); }
+.redemet-pdf-link[aria-disabled="true"] { opacity: .5; cursor: default; }
+.notam-report { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.notam-report h3 { font-size: 15px; margin-bottom: 10px; }
+.notam-report pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: inherit; font-size: 16px; line-height: 1.6; }
+#refreshNotams { padding: 8px 12px; margin: 10px 0; cursor: pointer; }
+.notam-category-filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.notam-category-filter button { padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-secondary); cursor: pointer; }
+.notam-category-filter button[aria-pressed="true"] { border-color: var(--primary); color: var(--text); }
+.notam-classification { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+.notam-report[hidden] { display: none; }
+.notam-validity-filter { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.notam-validity-filter button { flex: 1 1 150px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font-size: 16px; font-weight: 600; cursor: pointer; }
+.notam-validity-filter button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: white; }
+.notam-condition { font-size: 16px; font-weight: 700; margin: 10px 0; text-transform: uppercase; }
+.notam-dates { margin: 12px 0; line-height: 1.7; font-size: 14px; }
+.notam-leg-validity { font-size: 14px; margin: 12px 0; color: var(--text-secondary); }
+
+/* NOTAM workspace: stronger hierarchy without changing the other tools. */
+#notamPage {
+    --bg: #0b111c;
+    --surface: #111a28;
+    --surface-hover: #172235;
+    --border: #304158;
+    --text: #f1f5f9;
+    --text-secondary: #a8b6c9;
+    background: var(--bg);
+    color: var(--text);
+}
+#notamPage > * { max-width: 1120px; margin-left: auto; margin-right: auto; }
+#notamPage .weather-page-header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-bottom: 8px; }
+#notamPage .card-title { margin: 0; font-size: 26px; }
+#notamPage #refreshNotams { margin: 0 0 0 auto; padding: 9px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-hover); color: var(--text); font: inherit; font-size: 14px; }
+#notamPage .notam-source { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+#notamPage .notam-filter-help { color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; }
+#notamPage .notam-filter-help summary { cursor: pointer; padding: 4px 0; }
+#notamPage .notam-filter-help p { max-width: 850px; line-height: 1.6; margin: 8px 0; }
+#notamPage .notam-validity-filter { gap: 6px; margin-top: 8px; margin-bottom: 10px; padding-bottom: 10px; }
+#notamPage .notam-validity-filter button { flex: 0 1 auto; min-height: 40px; padding: 8px 14px; font-size: 14px; border-radius: 7px; }
+#notamPage .notam-validity-filter button[data-validity="Conferir validade"] { border-color: #b88a30; }
+#notamPage .notam-validity-filter button[data-validity="Conferir validade"][aria-pressed="true"] { background: #f5b942; color: #151515; }
+#notamPage .notam-category-filter { gap: 6px; margin-top: 0; margin-bottom: 20px; }
+#notamPage .notam-category-filter button { font-size: 12px; min-height: 34px; padding: 6px 10px; border-radius: 18px; }
+#notamPage .notam-category-filter button[aria-pressed="true"] { background: #203752; border-color: #75aaf5; }
+#notamPage button:focus-visible, #notamPage summary:focus-visible { outline: 2px solid #a4ceff; outline-offset: 3px; }
+#notamPage #notamAirports > .planning-leg-card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 22px; overflow: hidden; }
+#notamPage .planning-leg-card > summary { padding: 16px 20px; background: var(--surface-hover); }
+#notamPage .planning-leg-card > summary > strong { font-size: 20px; }
+#notamPage .planning-leg-card > summary > span { color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
+#notamPage .planning-leg-card > summary > .notam-airport-name { font-size: 14px; color: var(--text); }
+#notamPage .planning-leg-body { padding: 16px 20px; }
+#notamPage .planning-leg-body > .weather-briefing-message { margin: 0 0 14px; font-size: 12px; color: var(--text-secondary); }
+#notamPage .notam-report { padding: 20px; margin-bottom: 14px; background: #172235; border: 1px solid var(--border); border-radius: 10px; }
+#notamPage .notam-condition { margin: 0 0 8px; font-size: 16px; line-height: 1.5; color: var(--text); }
+#notamPage .notam-report h3 { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin: 0 0 16px; }
+#notamPage .notam-report pre { font-size: 16px; line-height: 1.7; color: var(--text); }
+#notamPage .notam-dates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 24px; margin: 18px 0 12px; font-size: 13px; color: var(--text-secondary); }
+#notamPage .notam-dates > :last-child { grid-column: 1 / -1; }
+#notamPage .notam-leg-validity { font-size: 14px; font-weight: 500; color: #cee2ff; }
+#notamPage .notam-reference { font-size: 12px; color: var(--text-secondary); }
+@media (max-width: 640px) {
+    #notamPage { padding: 16px 12px; }
+    #notamPage .weather-page-header { gap: 10px; }
+    #notamPage #closeNotams { flex-basis: 100%; text-align: left; }
+    #notamPage .notam-validity-filter button { flex: 1 1 125px; }
+    #notamPage .planning-leg-body { padding: 12px; }
+    #notamPage .planning-leg-card > summary { padding: 14px; }
+    #notamPage .notam-report { padding: 14px; }
+    #notamPage .notam-dates { grid-template-columns: 1fr; gap: 6px; }
+}
+.briefing-waypoints { overflow-x: auto; margin-top: 16px; }
+.briefing-waypoints table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.briefing-waypoints caption { text-align: left; color: var(--text-secondary); font-size: 12px; margin-bottom: 10px; }
+.briefing-waypoints th, .briefing-waypoints td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.briefing-waypoints td:nth-child(2) { white-space: nowrap; }

@@ -1,0 +1,22 @@
+import express from "express";
+import cors from "cors";
+import { fileURLToPath } from "node:url";
+import { testAccess, createApiLimit } from "./middleware/testAccess.js";
+import { router as notamRoutes } from "./routes/notamRoutes.js";
+import { router as healthRoutes } from "./routes/healthRoutes.js";
+import { router as navigationRoutes } from "./routes/navigationRoutes.js";
+import { router as weatherRoutes } from "./routes/weatherRoutes.js";
+import { router as chartRoutes } from "./routes/chartRoutes.js";
+
+export const app = express();
+if (process.env.NODE_ENV !== "production") app.use(cors());
+app.get("/healthz", (req, res) => res.json({ status: "ok" }));
+app.use(testAccess);
+app.use("/api", createApiLimit());
+app.use(notamRoutes);
+app.use(express.json());
+app.use(express.static(fileURLToPath(new URL("../dist/", import.meta.url)), { dotfiles: "deny" }));
+app.use(healthRoutes);
+app.use(navigationRoutes);
+app.use(weatherRoutes);
+app.use(chartRoutes);
