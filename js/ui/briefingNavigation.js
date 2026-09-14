@@ -1,6 +1,6 @@
 const panels = [
-    "routePanel",
     "missionPanel",
+    "routePanel",
     "fuelPanel",
     "weightPanel",
     "dashboardPanel"
