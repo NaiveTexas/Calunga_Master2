@@ -5,13 +5,15 @@
 }
 
 :root{
-    --bg:#111827;
-    --surface:#1F2937;
-    --surface-hover:#263548;
-    --border:#374151;
-    --primary:#3B82F6;
-    --text:#F9FAFB;
-    --text-secondary:#9CA3AF;
+    --bg:#F5F7FA;
+    --surface:#FFFFFF;
+    --surface-hover:#EAF2F4;
+    --border:#DCE3EB;
+    --primary:#087F8C;
+    --primary-hover:#066873;
+    --navigation:#142D4E;
+    --text:#243247;
+    --text-secondary:#59697D;
     --radius:14px;
     --gap:20px;
 }
@@ -39,7 +41,7 @@ body{
 
 .app-status[data-state="error"] {
     border-color: #dc2626;
-    color: #fecaca;
+    color: #B91C1C;
 }
 
 .mission-bar {
@@ -60,7 +62,9 @@ body{
 
     padding: 0 24px;
 
-    background: rgba(15, 23, 42, 0.92);
+    background: var(--navigation);
+    color: #FFFFFF;
+    --text-secondary: #DCE3EB;
 
     border-bottom: 1px solid var(--border);
 
@@ -144,7 +148,7 @@ body{
     width:100%;
     height:42px;
     padding:0 12px;
-    background:var(--bg);
+    background: var(--surface);
     color:var(--text);
     border:1px solid var(--border);
     border-radius:8px;
@@ -226,7 +230,7 @@ body{
     width:150px;
     height:38px;
     padding:0 10px;
-    background:var(--bg);
+    background: var(--surface);
     color:var(--text);
     border:1px solid var(--border);
     border-radius:8px;
@@ -511,11 +515,11 @@ body{
     font-weight: 600;
     letter-spacing: .02em;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, .25);
+    box-shadow: 0 2px 8px rgba(8, 127, 140, .25);
 }
 .aircraft-gallery[open] .aircraft-gallery-action::after { content: "CONFIRMAR"; }
 .aircraft-gallery[open] .aircraft-summary:hover .aircraft-gallery-action {
-    background: #2563eb;
+    background: var(--primary-hover);
 }
 .aircraft-gallery[open] .aircraft-picker { margin-top: 16px; }
 
@@ -633,7 +637,7 @@ body{
 
     height:38px;
 
-    background:var(--bg);
+    background: var(--surface);
 
     color:var(--text);
 
@@ -651,7 +655,7 @@ body{
 
     height:38px;
 
-    background:var(--bg);
+    background:var(--surface);
 
     color:var(--text);
 
@@ -839,7 +843,7 @@ body{
 
     color:var(--primary);
 
-    background:rgba(37,99,235,.08);
+    background:rgba(8,127,140,.08);
 
 }
 
@@ -1072,7 +1076,10 @@ body{
 
     flex-shrink: 0;
 
-    background: var(--surface);
+    background: var(--navigation);
+    --text: #FFFFFF;
+    --text-secondary: #DCE3EB;
+    --surface-hover: #234365;
 
     border-right: 1px solid var(--border);
 
@@ -1187,7 +1194,7 @@ body{
 }
 
 #weatherBriefing[data-state="error"] .weather-briefing-message {
-    color: #fecaca;
+    color: #B91C1C;
 }
 
 .weather-airport {
@@ -1251,6 +1258,7 @@ body{
 
 .enrc-control.active {
     background: var(--primary);
+    color: #FFFFFF;
 }
 
 .enrc-control:disabled {
@@ -1267,7 +1275,7 @@ body{
     padding: 10px 12px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: rgba(17, 24, 39, .92);
+    background: var(--surface);
     color: var(--text-secondary);
     font-size: .8rem;
 }
@@ -1500,11 +1508,11 @@ body{
 }
 
 .gramet-status[data-state="error"] {
-    color: #fecaca;
+    color: #B91C1C;
 }
 
 .gramet-status[data-state="success"] {
-    color: #a7f3d0;
+    color: #15803D;
 }
 
 .gramet-chart-wrap {
@@ -1681,7 +1689,7 @@ body{
 
     padding: 0 10px;
 
-    background: var(--bg) !important;
+    background: var(--surface) !important;
     color: var(--text) !important;
 
     border: 1px solid var(--border);
@@ -1988,7 +1996,7 @@ body{
     font-size: .7rem; text-align: center; appearance: textfield;
 }
 #waypointPanel .waypoint-speed input::-webkit-inner-spin-button { appearance: none; }
-#waypointPanel .waypoint-level { width: 65px; min-width: 0; height: 26px; padding: 2px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text); font-size: .7rem; }
+#waypointPanel .waypoint-level { width: 65px; min-width: 0; height: 26px; padding: 2px; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text); font-size: .7rem; }
 #waypointPanel .waypoint-procedure input { width: 13px; height: 13px; margin: 0; padding: 0; accent-color: var(--primary); }
 .route-point-airport > button { width: 20px; flex-shrink: 0; margin-left: 0; }
 .enroute-procedure-fuel[hidden] { display: none; }
@@ -2001,12 +2009,12 @@ body{
     justify-content: space-between;
     gap: 8px 16px;
     padding: 8px 20px;
-    border-bottom: 1px solid #354354;
+    border-bottom: 1px solid var(--border);
 }
 .mission-storage > div { display: flex; flex-wrap: wrap; gap: 8px; }
 .mission-storage button {
     padding: 6px 10px;
-    border: 1px solid #526174;
+    border: 1px solid var(--border);
     border-radius: 6px;
     background: transparent;
     color: inherit;
@@ -2014,8 +2022,8 @@ body{
     font-size: 12px;
     cursor: pointer;
 }
-.mission-storage button:hover { background: #354354; }
-.mission-storage small { color: #9caebf; font-size: 12px; }
+.mission-storage button:hover { background: var(--surface-hover); }
+.mission-storage small { color: var(--text-secondary); font-size: 12px; }
 .redemet-pdf-link {
     display: inline-block;
     padding: 10px 14px;
@@ -2036,6 +2044,7 @@ body{
 .notam-category-filter button[aria-pressed="true"] { border-color: var(--primary); color: var(--text); }
 .notam-classification { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
 .notam-report[hidden] { display: none; }
+#notamPage .planning-leg-card[hidden] { display: none; }
 .notam-validity-filter { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
 .notam-validity-filter button { flex: 1 1 150px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font-size: 16px; font-weight: 600; cursor: pointer; }
 .notam-validity-filter button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: white; }
@@ -2045,12 +2054,6 @@ body{
 
 /* NOTAM workspace: stronger hierarchy without changing the other tools. */
 #notamPage {
-    --bg: #0b111c;
-    --surface: #111a28;
-    --surface-hover: #172235;
-    --border: #304158;
-    --text: #f1f5f9;
-    --text-secondary: #a8b6c9;
     background: var(--bg);
     color: var(--text);
 }
@@ -2068,8 +2071,8 @@ body{
 #notamPage .notam-validity-filter button[data-validity="Conferir validade"][aria-pressed="true"] { background: #f5b942; color: #151515; }
 #notamPage .notam-category-filter { gap: 6px; margin-top: 0; margin-bottom: 20px; }
 #notamPage .notam-category-filter button { font-size: 12px; min-height: 34px; padding: 6px 10px; border-radius: 18px; }
-#notamPage .notam-category-filter button[aria-pressed="true"] { background: #203752; border-color: #75aaf5; }
-#notamPage button:focus-visible, #notamPage summary:focus-visible { outline: 2px solid #a4ceff; outline-offset: 3px; }
+#notamPage .notam-category-filter button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
+#notamPage button:focus-visible, #notamPage summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 #notamPage #notamAirports > .planning-leg-card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 22px; overflow: hidden; }
 #notamPage .planning-leg-card > summary { padding: 16px 20px; background: var(--surface-hover); }
 #notamPage .planning-leg-card > summary > strong { font-size: 20px; }
@@ -2077,13 +2080,13 @@ body{
 #notamPage .planning-leg-card > summary > .notam-airport-name { font-size: 14px; color: var(--text); }
 #notamPage .planning-leg-body { padding: 16px 20px; }
 #notamPage .planning-leg-body > .weather-briefing-message { margin: 0 0 14px; font-size: 12px; color: var(--text-secondary); }
-#notamPage .notam-report { padding: 20px; margin-bottom: 14px; background: #172235; border: 1px solid var(--border); border-radius: 10px; }
+#notamPage .notam-report { padding: 20px; margin-bottom: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
 #notamPage .notam-condition { margin: 0 0 8px; font-size: 16px; line-height: 1.5; color: var(--text); }
 #notamPage .notam-report h3 { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin: 0 0 16px; }
 #notamPage .notam-report pre { font-size: 16px; line-height: 1.7; color: var(--text); }
 #notamPage .notam-dates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 24px; margin: 18px 0 12px; font-size: 13px; color: var(--text-secondary); }
 #notamPage .notam-dates > :last-child { grid-column: 1 / -1; }
-#notamPage .notam-leg-validity { font-size: 14px; font-weight: 500; color: #cee2ff; }
+#notamPage .notam-leg-validity { font-size: 14px; font-weight: 500; color: var(--text); }
 #notamPage .notam-reference { font-size: 12px; color: var(--text-secondary); }
 @media (max-width: 640px) {
     #notamPage { padding: 16px 12px; }
