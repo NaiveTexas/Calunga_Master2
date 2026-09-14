@@ -59,6 +59,8 @@ function updateBriefingSteps() {
     document
         .querySelectorAll(".briefing-tab")
         .forEach((step, index) => {
+            step.setAttribute("aria-current", index === currentPage ? "page" : "false");
+            step.title = step.querySelector(".briefing-tab-label")?.textContent.trim() || "";
 
             step.classList.toggle(
                 "active",

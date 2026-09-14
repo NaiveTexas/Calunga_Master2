@@ -65,7 +65,11 @@ function updateCategoryFilter() {
     for (const body of document.querySelectorAll("#notamAirports .planning-leg-body")) {
         body.querySelector(".notam-filter-empty")?.remove();
         const reports = [...body.querySelectorAll(".notam-report")];
-        if (reports.length && reports.every(report => report.hidden)) append(body, "p", "Nenhum NOTAM nos filtros selecionados para este aeródromo.", "notam-filter-empty");
+        const card = body.closest(".planning-leg-card");
+        // Loading and failed requests remain visible; they are not empty results.
+        card.hidden = body.dataset.loaded === "true" && (reports.length
+            ? reports.every(report => report.hidden)
+            : selectedCategory !== "Todos");
     }
 }
 function append(parent, tag, text, className = "") {
@@ -137,8 +141,9 @@ export async function refreshNotamPanel(force = false) {
                 if (!response.ok) throw new Error(data.message || "Consulta indisponível.");
                 if (current !== requestId) return;
                 body.replaceChildren();
+                body.dataset.loaded = "true";
                 append(body, "p", `${data.reports.length} NOTAM(s) · Consulta: ${new Date(data.fetchedAt).toLocaleString("pt-BR", { timeZone: "UTC" })} UTC`, "weather-briefing-message");
-                if (!data.reports.length) append(body, "p", "Nenhum NOTAM retornado pelo AISWEB para este aeródromo.");
+                if (!data.reports.length) append(body, "p", "Nenhum NOTAM para este aeródromo");
                 for (const report of data.reports) {
                     const article = append(body, "article", "", "notam-report");
                     article.notamReport = report;

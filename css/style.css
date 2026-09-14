@@ -45,29 +45,7 @@ body{
 }
 
 .mission-bar {
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    right: 0;
-
-    height: 64px;
-
-    z-index: 900;
-
-    display: flex;
-
-    align-items: center;
-
-    padding: 0 24px;
-
-    background: var(--navigation);
-    color: #FFFFFF;
-    --text-secondary: #DCE3EB;
-
-    border-bottom: 1px solid var(--border);
-
+    display: none;
 }
 
 .flight-route {
@@ -1232,7 +1210,7 @@ body{
 
 .enrc-controls {
     position: absolute;
-    top: 76px;
+    top: 12px;
     right: 16px;
     z-index: 10;
     display: flex;
@@ -1268,7 +1246,7 @@ body{
 
 .enrc-zoom-notice {
     position: absolute;
-    top: 124px;
+    top: 60px;
     right: 16px;
     z-index: 10;
     max-width: 240px;
@@ -1302,7 +1280,7 @@ body{
 
     left: 0;
 
-    width: 450px;
+    width: min(450px, 100%);
 
     height: 100%;
 
@@ -2103,3 +2081,36 @@ body{
 .briefing-waypoints caption { text-align: left; color: var(--text-secondary); font-size: 12px; margin-bottom: 10px; }
 .briefing-waypoints th, .briefing-waypoints td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
 .briefing-waypoints td:nth-child(2) { white-space: nowrap; }
+
+@media (max-width: 640px) {
+    .app { height: 100dvh; }
+    .sidebar { width: 52px; }
+    .sidebar-button { width: 44px; height: 44px; }
+    .tool-panel { width: 100%; padding: 12px; }
+    .weather-workspace { padding: 16px 12px; }
+    .weather-page-header, .weather-tabs { flex-wrap: wrap; }
+    .tool-panel, .weather-workspace { overflow-x: auto; overscroll-behavior: contain; }
+    .briefing-navigation {
+        width: 100%; margin-left: 0; padding: 4px 0;
+        grid-template-columns: 44px minmax(0, 1fr) 44px;
+    }
+    .briefing-tabs { justify-content: center; }
+    .briefing-tab { display: none; }
+    .briefing-tab.active { display: flex; flex: 0 0 52px; min-height: 44px; }
+    .briefing-tab-label {
+        position: absolute; width: 1px; height: 1px; padding: 0;
+        overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    }
+    .briefing-tab-icon { margin-bottom: 0; }
+    .briefing-arrow { width: 44px; height: 44px; }
+    .planning-leg-body { padding: 12px; }
+    .planning-leg-card > summary { overflow-wrap: anywhere; }
+    .mission-storage { padding: 8px 0; }
+    .mission-storage > div { gap: 6px; }
+    #routePanel .route-selector { grid-template-columns: minmax(0, 1fr); }
+    #routePanel .swap-route { margin-top: 0; justify-self: center; }
+    #routePanel .route-selector > * { grid-column: 1; }
+    #waypointPanel { max-width: 100%; overflow-x: auto; }
+    .full-briefing-content { overflow-wrap: anywhere; }
+    .briefing-waypoints { max-width: 100%; }
+}
