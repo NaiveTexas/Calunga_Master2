@@ -4,18 +4,11 @@ import {
 
 const aircraftRegistrations = [
     {
-    registration: "FAB2291",
+    registration: "FAB2299",
 
     model: getAircraftModel("C-95AM"),
 
-    basicWeight: 3600
-    },
-    {
-    registration: "FAB2296",
-
-    model: getAircraftModel("C-95AM"),
-
-    basicWeight: 3566
+    basicWeight: 3753
     },
     {
     registration: "FAB2317",

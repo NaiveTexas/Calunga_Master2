@@ -6,6 +6,44 @@ export function refreshFullBriefing() {
     const content = document.getElementById("fullBriefingContent");
 
     if (!content) return;
+    let downloads = document.getElementById("briefingPdfDownloads");
+    if (!downloads) {
+        downloads = document.createElement("div");
+        downloads.id = "briefingPdfDownloads";
+        content.before(downloads);
+    }
+    downloads.replaceChildren();
+    mission.legs.forEach((leg, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = `Baixar PDF - Perna ${index + 1} (${leg.route.origin?.icao || "----"} - ${leg.route.destination?.icao || "----"})`;
+        button.addEventListener("click", async event => {
+            event.preventDefault();
+            event.stopPropagation();
+            const snapshot = JSON.parse(JSON.stringify({ leg, aircraft: mission.aircraft, settings: mission.settings }));
+            button.disabled = true;
+            const label = button.textContent;
+            button.textContent = "Consultando dados e gerando PDF…";
+            try {
+                const { collectBriefingReports, createBriefingPdf } = await import("../services/briefingPdf.js");
+                const reports = await collectBriefingReports(snapshot.leg);
+                const pdf = createBriefingPdf(snapshot.leg, snapshot.aircraft, snapshot.settings, index, reports);
+                const url = URL.createObjectURL(pdf.output("blob"));
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `Briefing-Perna-${index + 1}-${snapshot.leg.route.origin?.icao || "origem"}-${snapshot.leg.route.destination?.icao || "destino"}.pdf`;
+                link.target = "_blank";
+                link.rel = "noopener";
+                document.body.append(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 60000);
+                button.textContent = label;
+            } catch { button.textContent = "Falha ao gerar PDF. Clique para tentar novamente."; }
+            finally { button.disabled = false; }
+        });
+        downloads.append(button);
+    });
 
     const origin = mission.route.origin?.icao || "----";
     const destination = mission.route.destination?.icao || "----";

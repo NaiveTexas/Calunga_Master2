@@ -4,6 +4,7 @@ import View from "ol/View.js";
 
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
+import { initializeSigmetLayer } from "../weather/sigmetLayer.js";
 
 import {
     fromLonLat,
@@ -303,6 +304,9 @@ async function initializeOpenLayersMap() {
 
         target,
 
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true,
+
         layers: [
 
             new TileLayer({
@@ -404,6 +408,7 @@ async function initializeOpenLayersMap() {
 
 
     synchronizeRouteLayer(routeLayer);
+    initializeSigmetLayer(map);
 
 }
 

@@ -1206,6 +1206,10 @@ body{
     font: .75rem/1.45 ui-monospace, "Cascadia Code", monospace;
 }
 
+#briefingPdfDownloads { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+#briefingPdfDownloads button { padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); cursor: pointer; }
+#briefingPdfDownloads button:disabled { opacity: .6; cursor: wait; }
+
 .enrc-controls {
     position: absolute;
     top: 12px;
@@ -1244,7 +1248,7 @@ body{
 
 .enrc-zoom-notice {
     position: absolute;
-    top: 60px;
+    top: 150px;
     right: 16px;
     z-index: 10;
     max-width: 240px;
@@ -1255,6 +1259,22 @@ body{
     color: var(--text-secondary);
     font-size: .8rem;
 }
+
+.sigmet-map-toggle {
+    position: absolute;
+    top: 54px;
+    right: 16px;
+    z-index: 10;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font-size: .75rem;
+}
+.sigmet-map-toggle[aria-pressed="true"] { background: #92400e; border-color: #f59e0b; color: white; }
+.sigmet-map-status { position: absolute; top: 94px; right: 16px; z-index: 10; max-width: 220px; padding: 6px 10px; border-radius: 6px; background: var(--surface); color: var(--text-secondary); font-size: .75rem; }
 
 
 .map-body {
@@ -2109,3 +2129,8 @@ body{
     .full-briefing-content { overflow-wrap: anywhere; }
     .briefing-waypoints { max-width: 100%; }
 }
+.sigmet-report { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.sigmet-report pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.6; }
+.sigmet-report p, #sigmetStatus { margin: 10px 0; color: var(--text-secondary); }
+#sigmetReports .planning-leg-card { margin-top: 16px; }
+#refreshSigmets { padding: 10px 14px; margin: 12px 0; }

@@ -39,6 +39,10 @@ export function parseMission(text) {
     check(typeof text === "string" && text.length <= 5_000_000, "tamanho do arquivo");
     const data = JSON.parse(text);
     check(data?.format === "calunga-mission" && data.version === 1, "formato ou versão não suportada");
+    // Correct the former registration in saved drafts and imported missions.
+    if (data.aircraft?.model === "C-95AM" && data.aircraft.registration === "FAB2291") {
+        data.aircraft.registration = "FAB2299";
+    }
     const model = getAircraftModel(data.aircraft?.model);
     check(data.fuelInputUnit == null || ["LB", "KG"].includes(data.fuelInputUnit), "unidade dos valores de combustível");
     const registration = getAircraftRegistration(data.aircraft?.registration);

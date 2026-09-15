@@ -42,6 +42,21 @@ test("mission round trip preserves all leg inputs and recalculates results", () 
     assert.equal(serializeMission(), saved);
 });
 
+test("old C-95AM registration migrates to FAB2299 without changing leg inputs", () => {
+    const original = serializeMission();
+    const legacy = JSON.parse(original);
+    legacy.aircraft = { model: "C-95AM", registration: "FAB2291" };
+    const migrated = parseMission(JSON.stringify(legacy));
+    assert.equal(migrated.aircraft.registration, "FAB2299");
+    assert.deepEqual(migrated.legs, legacy.legs);
+    try {
+        restoreMission(migrated);
+        recalculateMission();
+        assert.equal(mission.aircraft.registration.registration, "FAB2299");
+        assert.equal(JSON.parse(serializeMission()).aircraft.registration, "FAB2299");
+    } finally { restoreMission(parseMission(original)); recalculateMission(); }
+});
+
 test("invalid imports are rejected without modifying the current mission", () => {
     const before = serializeMission();
     for (const mutate of [

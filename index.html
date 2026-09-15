@@ -136,6 +136,8 @@
                     </button>
                 </div>
 
+                <button id="toggleSigmets" class="sigmet-map-toggle" type="button" aria-pressed="false">SIGMET</button>
+                <div id="sigmetMapStatus" class="sigmet-map-status" role="status" hidden></div>
                 <div
                     id="enrcZoomNotice"
                     class="enrc-zoom-notice"
@@ -1067,6 +1069,7 @@
                     </div>
 
                     <div class="weather-tabs" role="tablist">
+                        <button class="weather-tab" type="button" data-weather-page="sigmetPage">SIGMET</button>
                         <button
                             class="weather-tab active"
                             type="button"
@@ -1091,6 +1094,13 @@
                         </button>
                     </div>
 
+                    <section
+                        id="sigmetPage" class="weather-page">
+                        <p class="weather-briefing-message">Avisos do Brasil que cruzam a faixa de 20 NM de cada lado da rota e coincidem com ETD–ETA. Inclui o entorno da origem e do destino. Sem exclusão automática por altitude ou projeção do movimento do fenômeno.</p>
+                        <button id="refreshSigmets" type="button">Atualizar SIGMETs</button>
+                        <p id="sigmetStatus" role="status"></p>
+                        <div id="sigmetReports"></div>
+                    </section>
                     <section
                         id="weatherSummaryPage"
                         class="weather-page active"

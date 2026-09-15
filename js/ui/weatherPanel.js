@@ -1,4 +1,5 @@
 import { mission } from "../models/missions.js";
+import { initializeSigmetPanel, refreshSigmets } from "./sigmetPanel.js";
 import { loadWeatherBriefing } from "../services/weather.js";
 import { createLegCards } from "./legCards.js";
 import { refreshRedemetPdfPanel } from "./redemetPdfPanel.js";
@@ -19,6 +20,7 @@ export function refreshWeatherLegCards() {
 }
 
 export function initializeWeatherPanel() {
+    initializeSigmetPanel();
     window.addEventListener("mission-route-updated", updateWeatherBriefing);
 
     const tabs = document.querySelectorAll(".weather-tab");
@@ -37,6 +39,7 @@ export function initializeWeatherPanel() {
             pages.forEach(page => {
                 page.classList.toggle("active", page.id === pageId);
             });
+            if (pageId === "sigmetPage") refreshSigmets(true);
 
         });
 

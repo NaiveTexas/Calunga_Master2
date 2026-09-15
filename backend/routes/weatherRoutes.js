@@ -3,6 +3,13 @@ import { config } from "../config/index.js";
 import { loadWeatherBriefing } from "../services/weatherService.js";
 import { loadGramet } from "../services/grametService.js";
 export const router = Router();
+router.get("/api/weather/sigmet", async (req, res) => {
+    if (!config.redemetApiKey) return res.status(503).json({ message: "Chave REDEMET não configurada." });
+    try {
+        const { loadSigmets } = await import("../services/sigmetService.js");
+        res.json(await loadSigmets());
+    } catch { res.status(502).json({ message: "Não foi possível consultar SIGMETs na REDEMET." }); }
+});
 router.get("/api/weather/briefing", async (req, res) => {
     const airports = String(req.query.airports || "")
         .split(",")

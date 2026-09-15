@@ -8,7 +8,10 @@
   },
   "dependencies": {
     "@turf/bearing": "^7.4.0",
+    "@turf/boolean-intersects": "^7.4.0",
+    "@turf/buffer": "^7.4.0",
     "better-sqlite3": "^13.0.3",
+    "jspdf": "^4.2.1",
     "lucide": "^1.31.0",
     "ol": "^10.10.0",
     "sortablejs": "^1.15.7",

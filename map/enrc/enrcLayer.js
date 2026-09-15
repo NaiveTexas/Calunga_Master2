@@ -50,6 +50,10 @@ export function createENRCLayer(
 
     return new TileLayer({
 
+        // Keep nearby zoom levels ready and retain more previously viewed tiles.
+        preload: 2,
+        cacheSize: 768,
+
         properties: {
 
             name: "ENRC"
@@ -57,6 +61,8 @@ export function createENRCLayer(
         },
 
 source: new TileWMS({
+
+    transition: 0,
 
     url:
         "/api/charts/enrc/wms",
