@@ -34,6 +34,7 @@ test("route accordion switches bound controls, preserves edits and removes a leg
     first.schedule.etd = "23:30";
     first.fuel.onboard = 4000;
     first.payload.data.total.weight = 150;
+    first.payload.entered = true;
     updateMission();
     const click = selector => document.querySelector(selector).click();
     const change = (selector, value) => {

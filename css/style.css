@@ -22,6 +22,8 @@ body{
     font-family:Segoe UI, sans-serif;
     min-height:100vh;
 }
+.install-app { position: fixed; left: 76px; bottom: 16px; z-index: 90; padding: 10px 16px; background: var(--primary); color: #111820; border: 1px solid var(--border); border-radius: 10px; font-weight: 600; cursor: pointer; }
+.install-app[hidden] { display: none; }
 
 .app-status {
     position: fixed;
@@ -1209,6 +1211,27 @@ body{
 #briefingPdfDownloads { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
 #briefingPdfDownloads button { padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); cursor: pointer; }
 #briefingPdfDownloads button:disabled { opacity: .6; cursor: wait; }
+
+#briefingGuide { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 100; max-width: min(440px, calc(100vw - 100px)); padding: 10px 18px; border: 1px solid #b9dfff; border-radius: 10px; background: #203349; color: #f3f8ff; text-align: center; font-size: .85rem; pointer-events: none; box-shadow: 0 4px 18px #0005; }
+@keyframes guidePulse { 50% { box-shadow: 0 0 0 3px #b9dfff88, 0 0 16px #b9dfff66; border-color: #e0f2ff; } }
+.guide-pulse { animation: guidePulse 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .guide-pulse { animation: none; outline: 2px solid #b9dfff; } }
+.briefing-tab:disabled { opacity: .35; cursor: not-allowed; }
+#routePanel .route-selector.guided-origin { display: block; position: relative; }
+.guided-origin > .autocomplete, .guided-destination { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+.guided-destination { margin-top: 26px; }
+.briefing-tab.step-unlocked { border-color: #b9dfff; color: #dceeff; }
+.dashboard-pdf, .route-done { display: block; margin: 0 0 20px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); cursor: pointer; }
+.dashboard-pdf:disabled, #routeDone:disabled { opacity: .45; cursor: not-allowed; }
+.dashboard-pdf { margin-left: auto; margin-right: auto; text-align: center; }
+.weight-limiting { color: var(--warning, #FAAE7B); }
+.leg-card.leg-pending, .planning-leg-card.leg-pending { border: 2px solid var(--warning, #FAAE7B); }
+.leg-pending > summary > span, .leg-pending > .leg-card-header > .leg-toggle { color: var(--warning, #FAAE7B); }
+.weight-exceeded, .weight-alert { color: var(--danger, #EE005A); }
+.weight-done { display: block; margin: 16px 0; padding: 10px 16px; border: 0; border-radius: 8px; background: var(--success, #70D6A3); color: #111820; cursor: pointer; }
+.weight-done:disabled { opacity: .45; cursor: not-allowed; }
+.route-eta-result { display: block; font-size: 1.35rem; font-weight: 700; padding: 6px 0; }
+#routePanel .field-control.departure-in-past { border-color: var(--danger, #EE005A); box-shadow: 0 0 0 1px var(--danger, #EE005A); }
 
 .enrc-controls {
     position: absolute;

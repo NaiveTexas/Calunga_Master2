@@ -574,6 +574,14 @@ let legList;
 let addLegButton;
 let expanded = true;
 let cardsSignature = "";
+import { briefingProgress, routeConfirmation } from "../core/briefingProgress.js";
+function finishRoute() {
+    const leg = missionLegs.active();
+    if (briefingProgress(mission, leg).routeReady) leg.routeConfirmed = routeConfirmation(leg);
+    expanded = false;
+    updateMission();
+    refreshRouteLegs();
+}
 
 function initializeLegCards() {
     const panel = document.getElementById("routePanel");
@@ -581,6 +589,10 @@ function initializeLegCards() {
     legEditor.id = "legEditor";
     legEditor.className = "leg-editor";
     Array.from(panel.children).filter(child => child.tagName !== "H2").forEach(child => legEditor.append(child));
+    const done = document.createElement("button");
+    done.id = "routeDone"; done.type = "button"; done.className = "route-done"; done.textContent = "Concluído";
+    done.addEventListener("click", finishRoute);
+    legEditor.querySelector("#eta").closest(".field").after(done);
     legList = document.createElement("div");
     legList.className = "leg-list";
     addLegButton = document.createElement("button");
@@ -588,7 +600,7 @@ function initializeLegCards() {
     addLegButton.className = "add-leg";
     addLegButton.addEventListener("click", () => { expanded = true; addMissionLeg(); });
     panel.append(legList, addLegButton);
-    for (const container of [panel, document.getElementById("fullBriefingPanel")]) {
+    for (const container of [panel]) {
         const label = document.createElement("p");
         label.className = "active-leg-context";
         label.setAttribute("aria-live", "polite");
@@ -620,6 +632,7 @@ function refreshRouteInputs() {
 
 export function refreshRouteLegs() {
     if (!legList) return;
+    legEditor.querySelector("#routeDone").disabled = !briefingProgress(mission, missionLegs.active()).routeReady;
     const signature = mission.legs.map(leg => leg.id).join(",");
     if (signature !== cardsSignature) {
         legEditor.remove();
@@ -636,6 +649,7 @@ export function refreshRouteLegs() {
             toggle.setAttribute("aria-controls", "legEditor");
             toggle.addEventListener("click", () => {
                 if (mission.activeLegId === leg.id) {
+                    if (expanded) { finishRoute(); return; }
                     expanded = !expanded;
                     refreshRouteLegs();
                 } else {
@@ -667,6 +681,9 @@ export function refreshRouteLegs() {
         card.querySelector(".leg-toggle").setAttribute("aria-expanded", String(open));
         card.querySelector(".remove-leg").hidden = mission.legs.length === 1;
         card.classList.toggle("selected", selected);
+        const pending = !briefingProgress(mission, leg).allowed[2];
+        card.classList.toggle("leg-pending", pending);
+        if (pending) card.querySelector(".leg-toggle").textContent += " · Pendente de conclusão";
         if (selected && legEditor.parentElement !== card) card.append(legEditor);
     });
     legEditor.hidden = !expanded;

@@ -16,6 +16,8 @@ import { initializeIcons } from "./ui/icons.js";
 import { showAppStatus, hideAppStatus } from "./ui/appStatus.js";
 import "../map/engine/openLayersMap.js";
 import { recoverDraft, initializeMissionStoragePanel } from "./ui/missionStoragePanel.js";
+import { initializeInstallApp } from "./ui/installApp.js";
+initializeInstallApp();
 
 async function initializeApp() {
     showAppStatus("Carregando dados de navegação…");

@@ -19,7 +19,16 @@ export function notamAirports(legs) {
 let signature = "";
 let requestId = 0;
 let initialized = false;
-let selectedCategory = "Todos";
+// null selects all; an empty Set explicitly selects none.
+let selectedCategories = null;
+let selectedAirports = null;
+let airportBar;
+function toggleSelection(selection, value) {
+    if (value === "Todos") return selection === null ? new Set() : null;
+    const next = new Set(selection || []);
+    if (next.has(value)) next.delete(value); else next.add(value);
+    return next;
+}
 let filterBar;
 let validityBar;
 let selectedValidity = "Válidos";
@@ -48,28 +57,38 @@ function updateCategoryFilter() {
         button.type = "button";
         button.dataset.validity = validity;
         button.setAttribute("aria-pressed", String(selectedValidity === validity));
-        button.addEventListener("click", () => { selectedValidity = validity; selectedCategory = "Todos"; updateCategoryFilter(); });
+        button.addEventListener("click", () => { selectedValidity = validity; updateCategoryFilter(); });
     }
     const matching = articles.filter(article => selectedValidity === "Todos" || article.validityStatuses.includes(selectedValidity));
+    const airports = [...notamAirports(mission.legs).keys()];
+    airportBar.replaceChildren();
+    for (const icao of ["Todos", ...airports]) {
+        const count = matching.filter(article => icao === "Todos" || article.notamReport.loc === icao).length;
+        const button = append(airportBar, "button", `${icao} (${count})`);
+        button.type = "button";
+        button.setAttribute("aria-pressed", String(icao === "Todos" ? selectedAirports === null : Boolean(selectedAirports?.has(icao))));
+        button.addEventListener("click", () => { selectedAirports = toggleSelection(selectedAirports, icao); updateCategoryFilter(); });
+    }
+    const airportMatching = matching.filter(article => selectedAirports === null || selectedAirports.has(article.notamReport.loc));
     const counts = new Map();
-    for (const article of matching) counts.set(article.dataset.category, (counts.get(article.dataset.category) || 0) + 1);
+    for (const article of airportMatching) counts.set(article.dataset.category, (counts.get(article.dataset.category) || 0) + 1);
     filterBar.replaceChildren();
-    for (const category of ["Todos", ...NOTAM_CATEGORIES.filter(category => counts.has(category) || category === selectedCategory)]) {
-        const count = category === "Todos" ? matching.length : counts.get(category) || 0;
+    for (const category of ["Todos", ...NOTAM_CATEGORIES.filter(category => articles.some(article => article.dataset.category === category) || selectedCategories?.has(category))]) {
+        const count = category === "Todos" ? airportMatching.length : counts.get(category) || 0;
         const button = append(filterBar, "button", `${category} (${count})`);
         button.type = "button";
-        button.setAttribute("aria-pressed", String(selectedCategory === category));
-        button.addEventListener("click", () => { selectedCategory = category; updateCategoryFilter(); });
+        button.setAttribute("aria-pressed", String(category === "Todos" ? selectedCategories === null : Boolean(selectedCategories?.has(category))));
+        button.addEventListener("click", () => { selectedCategories = toggleSelection(selectedCategories, category); updateCategoryFilter(); });
     }
-    for (const article of articles) article.hidden = !matching.includes(article) || (selectedCategory !== "Todos" && article.dataset.category !== selectedCategory);
+    for (const article of articles) article.hidden = !airportMatching.includes(article) || (selectedCategories !== null && !selectedCategories.has(article.dataset.category));
     for (const body of document.querySelectorAll("#notamAirports .planning-leg-body")) {
         body.querySelector(".notam-filter-empty")?.remove();
         const reports = [...body.querySelectorAll(".notam-report")];
         const card = body.closest(".planning-leg-card");
         // Loading and failed requests remain visible; they are not empty results.
-        card.hidden = body.dataset.loaded === "true" && (reports.length
+        card.hidden = (selectedAirports !== null && !selectedAirports.has(card.dataset.icao)) || selectedCategories?.size === 0 || (body.dataset.loaded === "true" && (reports.length
             ? reports.every(report => report.hidden)
-            : selectedCategory !== "Todos");
+            : selectedCategories !== null));
     }
 }
 function append(parent, tag, text, className = "") {
@@ -94,6 +113,11 @@ export function initializeNotamPanel() {
     append(explanation, "summary", "Como a validade é calculada");
     explanation.append(note);
     validityBar.before(explanation);
+    airportBar = document.createElement("div");
+    airportBar.className = "notam-category-filter notam-airport-filter";
+    airportBar.setAttribute("role", "group");
+    airportBar.setAttribute("aria-label", "Filtrar NOTAMs por aeródromos");
+    document.getElementById("notamAirports").before(airportBar);
     filterBar = document.createElement("div");
     filterBar.className = "notam-category-filter";
     filterBar.setAttribute("role", "group");
@@ -121,6 +145,7 @@ export async function refreshNotamPanel(force = false) {
     if (!airports.size) { append(container, "p", "Selecione os aeródromos nas pernas para consultar NOTAMs."); return; }
     const targets = [...airports].map(([icao, roles]) => {
         const card = append(container, "details", "", "planning-leg-card");
+        card.dataset.icao = icao;
         card.open = true;
         const summary = append(card, "summary", "");
         append(summary, "strong", icao);
@@ -131,6 +156,7 @@ export async function refreshNotamPanel(force = false) {
         return { icao, body };
     });
     // Bound concurrency and keep successful airports visible if another request fails.
+    updateCategoryFilter();
     let cursor = 0;
     await Promise.all(Array.from({ length: Math.min(3, targets.length) }, async () => {
         while (cursor < targets.length && current === requestId) {
@@ -163,6 +189,7 @@ export async function refreshNotamPanel(force = false) {
                 updateCategoryFilter();
             } catch {
                 if (current === requestId) body.textContent = "Não foi possível consultar este aeródromo. Use Atualizar NOTAMs para tentar novamente.";
+                updateCategoryFilter();
             }
         }
     }));

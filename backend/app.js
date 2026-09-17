@@ -11,6 +11,9 @@ import { router as chartRoutes } from "./routes/chartRoutes.js";
 export const app = express();
 if (process.env.NODE_ENV !== "production") app.use(cors());
 app.get("/healthz", (req, res) => res.json({ status: "ok" }));
+// Only non-sensitive installation metadata is public; app and API stay protected.
+app.get("/manifest.webmanifest", (req, res) => res.type("application/manifest+json").sendFile(fileURLToPath(new URL("../public/manifest.webmanifest", import.meta.url))));
+app.use("/pwa", express.static(fileURLToPath(new URL("../public/pwa/", import.meta.url)), { dotfiles: "deny", index: false }));
 app.use(testAccess);
 app.use("/api", createApiLimit());
 app.use(notamRoutes);

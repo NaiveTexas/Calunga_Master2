@@ -6,7 +6,6 @@ import { updateWeightPanel } from "../ui/weightPanel.js";
 import { updateMissionPanel } from "../ui/schedulePanel.js";
 import { refreshCrewPanel } from "../ui/crewPanel.js";
 import { refreshGrametPanel } from "../ui/grametPanel.js";
-import { refreshFullBriefing } from "../ui/fullBriefingPanel.js";
 import { refreshWeatherLegCards } from "../ui/weatherPanel.js";
 
 export function refreshUI() {
@@ -26,7 +25,6 @@ export function refreshUI() {
 
     refreshGrametPanel();
 
-    refreshFullBriefing();
 
 }
 

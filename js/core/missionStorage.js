@@ -10,10 +10,10 @@ export function serializeMission() {
         format: "calunga-mission", version: 1,
         fuelInputUnit: aircraftFuelUnit(mission.aircraft.model),
         aircraft: { model: mission.aircraft.model.name, registration: mission.aircraft.registration.registration },
-        crew: mission.crew, settings: mission.settings,
+        crew: mission.crew, settings: { ...mission.settings, modelChosen: mission.settings.modelChosen !== false, registrationChosen: mission.settings.registrationChosen !== false },
         activeIndex: mission.legs.findIndex(leg => leg.id === mission.activeLegId),
         legs: mission.legs.map(leg => ({
-            flightLevel: leg.flightLevel, automatic: leg.automatic, refuel: leg.refuel,
+            flightLevel: leg.flightLevel, automatic: leg.automatic, refuel: leg.refuel, routeConfirmed: leg.routeConfirmed, weightReviewed: leg.weightReviewed, dashboardReviewed: leg.dashboardReviewed,
             route: { ...pick(leg.route, ["origin", "destination", "alternate"]), waypoints: leg.route.waypoints },
             schedule: pick(leg.schedule, ["date", "etd"]),
             fuel: pick(leg.fuel, ["onboard", "taxi", "procedure", "reserve", "extra", "manual"]),
@@ -80,7 +80,7 @@ export function parseMission(text) {
 export function restoreMission(data) {
     const template = missionLegs.active();
     const legs = data.legs.map(leg => ({
-        flightLevel: leg.flightLevel, automatic: { ...leg.automatic }, refuel: leg.refuel,
+        flightLevel: leg.flightLevel, automatic: { ...leg.automatic }, refuel: leg.refuel, routeConfirmed: leg.routeConfirmed, weightReviewed: leg.weightReviewed, dashboardReviewed: leg.dashboardReviewed,
         route: { origin: leg.route.origin, destination: leg.route.destination, alternate: leg.route.alternate, waypoints: leg.route.waypoints, distance: 0 },
         schedule: { ...template.schedule, ...pick(leg.schedule, ["date", "etd"]) },
         fuel: { ...template.fuel, ...pick(leg.fuel, ["onboard", "taxi", "procedure", "reserve", "extra", "manual"]) },
@@ -94,4 +94,6 @@ export function restoreMission(data) {
     const unit = aircraftFuelUnit(mission.aircraft.model);
     convertMissionFuel(mission, data.fuelInputUnit || "LB", unit);
     mission.settings.fuelUnit = unit;
+    mission.settings.modelChosen = data.settings.modelChosen !== false;
+    mission.settings.registrationChosen = data.settings.registrationChosen !== false;
 }

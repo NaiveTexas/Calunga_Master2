@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111820">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Calunga">
+    <link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
+    <link rel="apple-touch-icon" href="/pwa/icon-180.png">
+    <link rel="icon" type="image/png" href="/pwa/icon-192.png">
 
     <title>Calunga de Missão Aérea - Rumba</title>
 
     <link rel="stylesheet" href="css/style.css">
+    <!-- Palette trial: remove this line to restore the previous theme. -->
+    <link rel="stylesheet" href="css/theme-trial.css">
 </head>
 
 
@@ -41,9 +49,6 @@
                     <i data-lucide="cloud"></i>
                 </button>
 
-                <button class="sidebar-button" data-tool="fullBriefing" type="button" title="Full Briefing">
-                    <i data-lucide="file-text"></i>
-                </button>
                 <button class="sidebar-button" data-tool="notam" type="button" title="NOTAMs" aria-label="NOTAMs">
                     <i data-lucide="megaphone"></i>
                 </button>
@@ -303,7 +308,6 @@
                                     <input id="departure" class="airport-input" type="text" maxlength="4" placeholder="ICAO" autocomplete="off">
                                     <div id="departure-list" class="autocomplete-list"></div>
                                 </div>
-                                <button class="swap-route" tabindex="-1" type="button" aria-label="Inverter origem e destino">⇄</button>
                                 <div class="autocomplete">
                                     <label class="field-label" for="destination">Destino</label>
                                     <input id="destination" class="airport-input" type="text" maxlength="4" placeholder="ICAO" autocomplete="off">
@@ -321,7 +325,7 @@
 
                             <div class="field">
                                 <label class="field-label" for="eta">ETA <span class="schedule-timezone">UTC</span></label>
-                                <input id="eta" class="field-control" type="time" readonly>
+                                <output id="eta" class="route-eta-result" aria-live="polite"></output>
                             </div>
 
                             <div id="waypointPanel"></div>
@@ -689,7 +693,7 @@
                                 <div class="field">
 
                                     <span class="field-label">
-                                        Payload
+                                        Payload / Disponibilidade Restante
                                     </span>
 
                                     <span
@@ -943,65 +947,12 @@
                                         </span>
 
                                     </div>
-    <details class="dashboard-weight-details">
-        <summary>Detalhamento dos pesos</summary>
-        <div class="dashboard-row">
-
-                                    <span class="dashboard-label">
-                                        PBO (Peso Básico + Tripulação)
-                                    </span>
-
-                                    <span
-                                        id="dashboard-pbo"
-                                        class="dashboard-value"
-                                    >
-                                        0 KG
-                                    </span>
-
-                                </div>
-        <div class="dashboard-row">
-
-                                    <span class="dashboard-label">
-                                        Payload
-                                    </span>
-
-                                    <span
-                                        id="dashboard-payload"
-                                        class="dashboard-value"
-                                    >
-                                        0 KG
-                                    </span>
-
-                                </div>
-        <div class="dashboard-row">
-
-                                        <span class="dashboard-label">
-                                            Rampa
-                                        </span>
-
-                                        <span
-                                            id="dashboard-ramp-weight"
-                                            class="dashboard-value"
-                                        >
-                                            0 KG
-                                        </span>
-
-                                    </div>
-        <div class="dashboard-row">
-
-                                        <span class="dashboard-label">
-                                            Zero Combustível
-                                        </span>
-
-                                        <span
-                                            id="dashboard-zfw"
-                                            class="dashboard-value"
-                                        >
-                                            0 KG
-                                        </span>
-
-                                    </div>
-    </details>
+<div class="dashboard-weight-details">
+<div class="dashboard-row"><span class="dashboard-label">PBO (Peso Básico + Tripulação)</span><span id="dashboard-pbo" class="dashboard-value">0 KG</span></div>
+<div class="dashboard-row"><span class="dashboard-label">Combustível</span><span id="dashboard-fuel-weight" class="dashboard-value">0 KG</span></div>
+<div class="dashboard-row"><span class="dashboard-label">Payload</span><span id="dashboard-payload" class="dashboard-value">0 KG</span></div>
+<div class="dashboard-row"><span class="dashboard-label">Disponibilidade</span><span id="dashboard-availability" class="dashboard-value">0 KG</span></div>
+</div>
 </section>
 
 <!-- METEOROLOGIA -->
@@ -1036,13 +987,6 @@
                     <div id="notamAirports"></div>
                 </section>
 
-                <section id="fullBriefingPanel" class="tool-content">
-                    <div class="weather-page-header">
-                        <button id="closeFullBriefing" class="weather-close-button" type="button">← Voltar ao mapa</button>
-                        <h2 class="card-title">Full Briefing</h2>
-                    </div>
-                    <article id="fullBriefingContent" class="full-briefing-content"></article>
-                </section>
 
 
                 <!-- ================================== -->

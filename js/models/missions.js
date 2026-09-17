@@ -90,6 +90,7 @@ export const mission = {
     },
 
     payload: {
+        entered: false,
 
     mode: "TOTAL",
 

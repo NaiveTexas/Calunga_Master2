@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 export default defineConfig({
-    publicDir: false,
+    publicDir: "public",
     optimizeDeps: { include: ["jspdf"] },
     server: {
         host: "127.0.0.1",

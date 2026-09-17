@@ -20,6 +20,11 @@ const payloadModes = [
 
 
 export function createPayloadEditor(panel, leg) {
+    panel.addEventListener("change", event => {
+        if (event.target.type === "number") {
+            leg.payload.entered = [...panel.querySelectorAll('input[type="number"]')].every(input => input.value.trim() !== "" && Number.isFinite(Number(input.value)) && Number(input.value) >= 0);
+        }
+    }, true);
     const mission = { payload: leg.payload };
     let snapshot = "";
     function commit() {
@@ -73,9 +78,11 @@ export function createPayloadEditor(panel, leg) {
 
         input.classList.add("field-control");
 
-        input.value = mission.payload.data.total.weight;
+        input.value = mission.payload.entered === false ? "" : mission.payload.data.total.weight;
+        input.min = "0"; input.placeholder = "Informe o payload (KG), inclusive 0";
 
         input.addEventListener("change", () => {
+            mission.payload.entered = input.value.trim() !== "" && Number.isFinite(Number(input.value)) && Number(input.value) >= 0;
 
             mission.payload.data.total.weight =
 
@@ -318,6 +325,7 @@ export function createPayloadEditor(panel, leg) {
             button.addEventListener("click", () => {
 
                 mission.payload.mode = mode.id;
+                mission.payload.entered = false;
 
                 refreshPayloadPanel();
 

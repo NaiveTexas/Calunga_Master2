@@ -3,7 +3,7 @@ import { aircraftFuelUnit, convertMissionFuel } from "../core/fuelUnits.js";
 
 import { getAircraftModel, getAircraftModelNames } from "../database/aircraftModels.js";
 import { getAircraftRegistration, getAircraftRegistrationNameList } from "../database/aircraftRegistrations.js";
-import { updateMissionField } from "../core/missionEngine.js";
+import { updateMissionField, updateMission } from "../core/missionEngine.js";
 import { updateFuelUnitSelector } from "./fuelPanel.js";
 import { bindInput } from "./bindInput.js";
 const FLIGHT_LEVELS = Array.from({ length: 41 }, (_, index) => (index + 5) * 10);
@@ -97,7 +97,17 @@ function loadAircraftModels() {
         input.checked = index === 0;
         const selectModel = () => {
             if (input.disabled || !input.checked) return;
-            if (mission.aircraft.model.name !== name) updateAircraftRegistrations(name);
+            if (mission.aircraft.model.name !== name || mission.settings.modelChosen === false) {
+                updateAircraftRegistrations(name);
+                mission.settings.modelChosen = true;
+                mission.settings.registrationChosen = false;
+                const select = document.getElementById("registration");
+                const placeholder = document.createElement("option");
+                placeholder.value = ""; placeholder.textContent = "Selecione a matrícula"; placeholder.disabled = true;
+                select.prepend(placeholder); select.value = "";
+                document.getElementById("selectedAircraftRegistration").textContent = "Selecione uma matrícula";
+                updateMission();
+            }
             const gallery = document.getElementById("aircraftGallery");
             gallery.open = false;
             gallery.querySelector("summary")?.focus();
@@ -157,7 +167,11 @@ function updateAircraft() {
 
 export function initializeAircraftPanel(preserveMission = false) {
     bindInput("flightLevel", mission.aircraft, "flightLevel");
-    document.getElementById("registration").addEventListener("change", updateAircraft);
+    document.getElementById("registration").addEventListener("change", () => {
+        if (!document.getElementById("registration").value) return;
+        mission.settings.registrationChosen = true;
+        updateAircraft();
+    });
     initializeFlightLevelSelector();
     loadAircraftModels();
     if (preserveMission) {
@@ -170,5 +184,18 @@ export function initializeAircraftPanel(preserveMission = false) {
         updateAircraft();
     } else {
         updateAircraftRegistrations(getAircraftModelNames()[0]);
+        mission.settings.modelChosen = false;
+        mission.settings.registrationChosen = false;
+    }
+    if (mission.settings.registrationChosen === false) {
+        const select = document.getElementById("registration");
+        const option = document.createElement("option"); option.value = ""; option.textContent = "Selecione a matrícula"; option.disabled = true;
+        select.prepend(option); select.value = "";
+        select.disabled = mission.settings.modelChosen === false;
+        document.getElementById("selectedAircraftRegistration").textContent = "Selecione uma matrícula";
+    }
+    if (mission.settings.modelChosen === false) {
+        document.querySelectorAll('input[name="aircraft-model"]').forEach(input => input.checked = false);
+        document.getElementById("selectedAircraftModel").textContent = "Escolha sua aeronave";
     }
 }

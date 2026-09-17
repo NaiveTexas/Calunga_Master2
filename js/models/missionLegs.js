@@ -4,6 +4,7 @@ export function initializeMissionLegs(mission) {
     let sequence = 1;
     const first = {
         id: sequence,
+        routeConfirmed: "",
         flightLevel: mission.aircraft.flightLevel,
         automatic: { origin: false, departure: false, fuel: false },
         refuel: 0,
@@ -45,6 +46,7 @@ export function initializeMissionLegs(mission) {
             leg.id = ++sequence;
             leg.flightLevel = previous.flightLevel;
             leg.payload = structuredClone(previous.payload);
+            leg.payload.entered = false;
             leg.route.origin = previous.route.destination;
             leg.schedule.date = "";
             leg.schedule.etd = "";

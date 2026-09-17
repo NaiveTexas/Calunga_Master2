@@ -3,10 +3,11 @@ import { aircraftFuelUnit } from "../core/fuelUnits.js";
 import { formatTime, formatDate } from "../utils/helpers.js";
 import { createLegCards, legDistance } from "./legCards.js";
 import { formatRoute } from "../core/routePlanning.js";
+import { createBriefingDownload } from "./briefingDownload.js";
 
 let renderCards;
 export function updateDashboard() {
-    if (!renderCards) renderCards = createLegCards("dashboardPanel", ".card-title");
+    if (!renderCards) renderCards = createLegCards("dashboardPanel", ".card-title", (leg, { body }) => body.prepend(createBriefingDownload(leg.id)));
     renderCards((leg, { field, subtitle }) => {
         const { route, schedule, fuel, weight } = leg;
         const departure = (formatDate(schedule.date) || "----") + " · " + (schedule.etd || "--:--") + " UTC";
@@ -27,9 +28,9 @@ export function updateDashboard() {
             "dashboard-pbo": Math.round(weight.basic + weight.crew) + " KG",
             "dashboard-payload": Math.round(weight.payload) + " KG",
             "dashboard-dep-weight": Math.round(weight.takeoff) + " KG",
-            "dashboard-ramp-weight": "-- KG",
+            "dashboard-fuel-weight": Math.round(weight.fuel) + " KG",
             "dashboard-landing-weight": Math.round(weight.landing) + " KG",
-            "dashboard-zfw": Math.round(weight.basic + weight.crew + weight.payload) + " KG"
+            "dashboard-availability": Number.isFinite(weight.availability?.remaining) ? Math.floor(weight.availability.remaining) + " KG" : "Não informado"
         };
         for (const [name, value] of Object.entries(values)) field(name).textContent = value;
     });

@@ -32,6 +32,7 @@ function updateCrewWeight(context = mission) {
 //==========================================//
 
 import { fuelMassKg } from "./fuelUnits.js";
+import { calculatePayloadAvailability } from "./payloadAvailability.js";
 function updateFuelWeight(context = mission) {
 
     context.weight.fuel = fuelMassKg(context.fuel.onboard, context.aircraft.model);
@@ -90,5 +91,6 @@ export function updateWeightPlanning(context = mission) {
     updateTakeoffWeight(context);
 
     updateLandingWeight(context);
+    context.weight.availability = calculatePayloadAvailability(context.weight, context.aircraft.model);
 
 }

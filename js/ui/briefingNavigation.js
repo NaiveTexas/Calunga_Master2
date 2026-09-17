@@ -1,3 +1,6 @@
+import { mission, missionLegs } from "../models/missions.js";
+import { briefingProgress, briefingGuidance, weightReviewSignature } from "../core/briefingProgress.js";
+const progress = () => briefingProgress(mission, missionLegs.active());
 const panels = [
     "missionPanel",
     "routePanel",
@@ -22,9 +25,15 @@ function showBriefingPage(index) {
     ) {
         return;
     }
+    if (!progress().allowed[index]) return;
 
 
     currentPage = index;
+    if (index === 4) {
+        const leg = missionLegs.active();
+        leg[index === 3 ? "weightReviewed" : "dashboardReviewed"] = weightReviewSignature(mission, leg);
+        window.dispatchEvent(new window.Event("mission-updated"));
+    }
 
 
     document
@@ -55,10 +64,22 @@ function showBriefingPage(index) {
 //==========================================//
 
 function updateBriefingSteps() {
+    const state = progress();
+    const guidance = briefingGuidance(state, currentPage);
+    const hint = document.getElementById("briefingGuide");
+    if (hint) { hint.textContent = guidance.message; hint.hidden = !guidance.message; }
+    document.querySelector('[data-tool="briefing"]')?.classList.toggle("guide-pulse", !state.model);
+    document.getElementById("aircraftGallery")?.classList.toggle("guide-pulse", !state.model);
+    const registration = document.getElementById("registration");
+    registration?.classList.toggle("guide-pulse", state.model && !state.allowed[1]);
+    if (registration) registration.disabled = !state.model;
 
     document
         .querySelectorAll(".briefing-tab")
         .forEach((step, index) => {
+            step.disabled = !state.allowed[index];
+            step.classList.toggle("guide-pulse", index === guidance.target && state.allowed[index]);
+            step.classList.toggle("step-unlocked", index === guidance.target && state.allowed[index]);
             step.setAttribute("aria-current", index === currentPage ? "page" : "false");
             step.title = step.querySelector(".briefing-tab-label")?.textContent.trim() || "";
 
@@ -87,7 +108,8 @@ function updateBriefingSteps() {
 
 
     next.disabled =
-        currentPage === panels.length - 1;
+        currentPage === panels.length - 1 || !state.allowed[currentPage + 1];
+    next.title = next.disabled ? state.message : "Próxima etapa";
 
 }
 
@@ -97,6 +119,21 @@ function updateBriefingSteps() {
 //==========================================//
 
 export function initializeBriefingNavigation() {
+    const originCard = document.querySelector("#routePanel .route-selector");
+    const destinationCard = document.getElementById("destination").closest(".autocomplete");
+    originCard.classList.add("guided-origin");
+    destinationCard.classList.add("guided-destination");
+    originCard.after(document.getElementById("waypointPanel"), destinationCard);
+    const distance = document.getElementById("routeTotalDistance");
+    if (distance) destinationCard.append(distance);
+    const hint = document.createElement("div");
+    hint.id = "briefingGuide"; hint.setAttribute("role", "status");
+    document.body.append(hint);
+    window.addEventListener("mission-updated", () => {
+        const state = progress();
+        if (!state.allowed[currentPage]) showBriefingPage(state.allowed.lastIndexOf(true));
+        else updateBriefingSteps();
+    });
 
     const previous =
         document.getElementById(

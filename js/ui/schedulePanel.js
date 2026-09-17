@@ -2,6 +2,19 @@ import { mission, missionLegs } from "../models/missions.js";
 import { formatDate } from "../utils/helpers.js";
 import { bindInput } from "./bindInput.js";
 import { updateMission } from "../core/missionEngine.js";
+function highlightPastDeparture() {
+    const date = document.getElementById("date");
+    const etd = document.getElementById("etd");
+    if (!date || !etd) return;
+    const departure = Date.parse(`${date.value}T${etd.value}:00Z`);
+    // The inputs have minute precision: the current minute is still "now".
+    const past = Boolean(date.value && etd.value) && Number.isFinite(departure) && departure < Math.floor(Date.now() / 60000) * 60000;
+    for (const input of [date, etd]) {
+        input.classList.toggle("departure-in-past", past);
+        if (past) input.title = "ETD anterior à data e hora atuais (UTC). É permitido continuar.";
+        else input.removeAttribute("title");
+    }
+}
 function initializeCurrentUtcSchedule() {
 
     const departure = new Date();
@@ -26,6 +39,7 @@ export function updateMissionPanel() {
 
     document.getElementById("date").value = mission.schedule.date;
     document.getElementById("etd").value = mission.schedule.etd;
+    highlightPastDeparture();
 
     document.getElementById("eta").value =
         mission.schedule.eta;
@@ -43,6 +57,7 @@ export function updateMissionPanel() {
 
 export function initializeSchedulePanel(preserveMission = false) {
     for (const id of ["date", "etd"]) {
+        document.getElementById(id).addEventListener("input", highlightPastDeparture);
         document.getElementById(id).addEventListener("change", () => {
             missionLegs.active().automatic.departure = false;
         });
@@ -50,6 +65,10 @@ export function initializeSchedulePanel(preserveMission = false) {
     bindInput("date", mission.schedule, "date");
     bindInput("etd", mission.schedule, "etd");
     if (!preserveMission) initializeCurrentUtcSchedule();
+    highlightPastDeparture();
+    const clockCheck = setInterval(highlightPastDeparture, 15000);
+    clockCheck.unref?.();
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) highlightPastDeparture(); });
     document.getElementById("etdNow").addEventListener("click", () => {
         missionLegs.active().automatic.departure = false;
         const now = new Date().toISOString();

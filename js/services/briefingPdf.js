@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+import { formatPayloadAvailability } from "../core/payloadAvailability.js";
 import { formatDate, formatTime } from "../utils/helpers.js";
 import { formatRoute } from "../core/routePlanning.js";
 import { buildRedemetPdfUrl, redemetPdfAirports } from "./redemetPdf.js";
@@ -72,7 +73,7 @@ export function createBriefingPdf(leg, aircraft, settings, index, reports) {
         [["ETD - UTC", `${formatDate(leg.schedule.date)}  ${leg.schedule.etd || "--:--"}`], ["ETA - UTC", `${formatDate(leg.schedule.etaDate)}  ${leg.schedule.eta || "--:--"}`]],
         [["COMB MÍNIMO", number(leg.fuel.total, settings.fuelUnit)], ["COMB A CONSUMIR", number(consumption, settings.fuelUnit)]],
         [["PESO DE DEP", number(leg.weight.takeoff, "KG")], ["PESO DE POUSO", number(leg.weight.landing, "KG")]],
-        [["PAYLOAD", number(leg.weight.payload, "KG")], ["ALTERNATIVA", leg.route.alternate?.icao || "--"]]
+        [["PAYLOAD / DISPONIBILIDADE RESTANTE", formatPayloadAvailability(leg.weight)], ["ALTERNATIVA", leg.route.alternate?.icao || "--"]]
     ];
     for (const pair of fields) {
         doc.setFont("helvetica", "bold"); doc.setFontSize(12);

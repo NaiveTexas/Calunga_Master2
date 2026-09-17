@@ -1,0 +1,47 @@
+/* Palette trial. Remove this stylesheet's link in index.html to restore the
+   original interface. PDF styles and SIGMET phenomenon colors are independent. */
+:root {
+    --bg: #111820;
+    --surface: #35393C;
+    --surface-hover: #41484D;
+    --border: #56616A;
+    --primary: #A4D8FF;
+    --primary-strong: #63B3ED;
+    --text: #EDF3F7;
+    --text-secondary: #98A8B5;
+    --warning: #FAAE7B;
+    --danger: #EE005A;
+    --success: #70D6A3;
+    --on-primary: #111820;
+    color-scheme: dark;
+}
+#routeDone { background: var(--success); border-color: var(--success); color: var(--on-primary); font-weight: 600; }
+#routeDone:not(:disabled):hover { background: #91E1B8; border-color: #91E1B8; }
+#routeDone:disabled { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
+.autocomplete-item.selected, .aircraft-gallery-action, #addCrew,
+.payload-mode.selected, .enrc-control.active, .sidebar-button.active,
+.weather-tab.active, .notam-validity-filter button[aria-pressed="true"],
+.gramet-update-button { color: var(--on-primary); }
+.aircraft-gallery[open] .aircraft-summary:hover .aircraft-gallery-action {
+    background: var(--primary-strong); color: var(--on-primary);
+}
+.aircraft-gallery-action { box-shadow: 0 2px 8px #A4D8FF30; }
+#briefingGuide { background: var(--surface); color: var(--text); border-color: var(--primary); }
+.briefing-tab.step-unlocked { color: var(--primary); border-color: var(--primary); }
+@keyframes guidePulse { 50% { box-shadow: 0 0 0 3px #A4D8FF88, 0 0 16px #A4D8FF66; border-color: var(--primary); } }
+.enrc-zoom-notice { background: #111820eb; }
+.mission-storage, .mission-storage button { border-color: var(--border); }
+.mission-storage button:hover { background: var(--surface-hover); }
+.mission-storage small { color: var(--text-secondary); }
+.app-status[data-state="error"] { border-color: var(--danger); color: var(--text); }
+.crew-remove:hover { background: var(--danger); color: var(--text); }
+#weatherBriefing[data-state="error"] .weather-briefing-message,
+.gramet-status[data-state="error"] { color: var(--warning); }
+.gramet-status[data-state="success"] { color: var(--success); }
+.gramet-chart-wrap { background: var(--bg); }
+#notamPage .notam-validity-filter button[data-validity="Conferir validade"] { border-color: var(--warning); }
+#notamPage .notam-validity-filter button[data-validity="Conferir validade"][aria-pressed="true"] { background: var(--warning); color: var(--on-primary); }
+#notamPage .notam-validity-filter button[data-validity="Válidos"][aria-pressed="true"] { background: var(--success); color: var(--on-primary); border-color: var(--success); }
+#notamPage .notam-category-filter button[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+#notamPage button:focus-visible, #notamPage summary:focus-visible { outline-color: var(--primary); }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--primary-strong); outline-offset: 3px; }

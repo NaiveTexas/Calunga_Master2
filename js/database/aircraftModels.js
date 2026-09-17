@@ -17,10 +17,10 @@ export const aircraftModels = [
         procedureTime: 10,
         reserveTime: 45,
 
-        maxRampaWeight: 5930,
-        noFuelWeight: 5450,
-        maxTakeoffWeight: 5900,
-        maxLandingWeight: 5700
+        maxRampaWeight: 5630,
+        noFuelWeight: 5300,
+        maxTakeoffWeight: 5600,
+        maxLandingWeight: 5300
     },
 
     {
@@ -41,10 +41,10 @@ export const aircraftModels = [
         procedureTime: 10,
         reserveTime: 45,
         
-        maxRampaWeight: 5630,
-        noFuelWeight: 5300,
-        maxTakeoffWeight: 5600,
-        maxLandingWeight: 5300
+        maxRampaWeight: 5930,
+        noFuelWeight: 5450,
+        maxTakeoffWeight: 5900,
+        maxLandingWeight: 5700
     },
 
     {
