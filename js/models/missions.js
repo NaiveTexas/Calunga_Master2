@@ -36,7 +36,7 @@ export const mission = {
 
         registration: getAircraftRegistration("FAB2317"),
 
-        flightLevel: "FL100"
+        flightLevel: ""
     },
 
     crew: [

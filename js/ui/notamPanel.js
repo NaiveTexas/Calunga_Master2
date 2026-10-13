@@ -1,5 +1,6 @@
 import { mission } from "../models/missions.js";
 import { notamLegValidity, formatNotamDate } from "../core/notamValidity.js";
+import { isNotamExcluded, setNotamExcluded } from "../core/notamExclusions.js";
 import { classifyNotam, NOTAM_CATEGORIES } from "../core/notamClassification.js";
 
 export function notamAirports(legs) {
@@ -36,6 +37,9 @@ function updateCategoryFilter() {
     if (!filterBar) return;
     const articles = [...document.querySelectorAll("#notamAirports .notam-report")];
     for (const article of articles) {
+        const excluded = isNotamExcluded(mission.settings, article.notamReport, article.closest("[data-icao]").dataset.icao);
+        article.classList.toggle("notam-excluded", excluded);
+        article.querySelector(".notam-exclude input").checked = excluded;
         const relevant = mission.legs.flatMap((leg, index) => notamAirports([leg]).has(article.notamReport.loc)
             ? [{ index, status: notamLegValidity(article.notamReport, leg) }] : []);
         const statuses = relevant.map(item => item.status);
@@ -173,6 +177,19 @@ export async function refreshNotamPanel(force = false) {
                 for (const report of data.reports) {
                     const article = append(body, "article", "", "notam-report");
                     article.notamReport = report;
+                    const exclusion = append(article, "label", "", "notam-exclude");
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.setAttribute("aria-label", `Ocultar NOTAM ${report.n || ""} de ${icao} nos PDFs`);
+                    exclusion.append(checkbox);
+                    const mark = append(exclusion, "span", "", "notam-exclude-mark");
+                    mark.setAttribute("aria-hidden", "true");
+                    append(exclusion, "span", "Ocultar PDF");
+                    checkbox.addEventListener("change", () => {
+                        setNotamExcluded(mission.settings, report, icao, checkbox.checked);
+                        updateCategoryFilter();
+                        window.dispatchEvent(new CustomEvent("mission-updated"));
+                    });
                     const classification = classifyNotam(report);
                     article.dataset.category = classification.category;
                     append(article, "p", `${classification.category} · ${classification.condition}`, "notam-condition");

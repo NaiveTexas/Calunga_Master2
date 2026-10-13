@@ -1,0 +1,33 @@
+{
+  "chart": "ENRC_L3",
+  "type": "LOW",
+  "extent": [
+    -45.24717489588541,
+    -14.715999965870623,
+    -29.704959830821288,
+    -4.330869178630694
+  ],
+  "minZoom": 5,
+  "maxZoom": 10,
+  "tilePixelRatio": 2,
+  "tileCount": 1912,
+  "bytes": 49523751,
+  "url": "/enrc-static/pmtiles/ENRC_L3-d0702575805e2d03.pmtiles",
+  "source": "assets/charts/enrc-current/ENRC_L3.pdf",
+  "sourceSha256": "f872ab9932d59cf28d95c121941a5b0b5b8e1b56e5373bbda15dec21739e1b71",
+  "edition": "03/09/2026",
+  "frame": [
+    355.8,
+    44.16,
+    2733.96,
+    1657.08
+  ],
+  "georeferenceResidualMeters": 0.04115900656602114,
+  "maxWarpErrorPixels": 7.27519683822652e-05,
+  "preparationSeconds": 134.4,
+  "sourceUrl": "https://aisweb.decea.mil.br/download/?arquivo=6883fc34-17cb-4987-9b34dc86efbd1eeb&nome=ENRC%20L3",
+  "pngUrl": "/enrc-static/pdf-l3-f872ab9932d5-v3/ENRC_L3/{z}/{x}/{y}.png",
+  "format": "pmtiles",
+  "archiveBytes": 49412244,
+  "archiveSha256": "d0702575805e2d035f7b97623f0189e9dd97bacdc92dfe4693bdb46c160b6d56"
+}

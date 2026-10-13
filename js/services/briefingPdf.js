@@ -1,3 +1,5 @@
+import { formatWeight } from "../core/weightUnits.js";
+import { aircraftFuelUnit } from "../core/fuelUnits.js";
 import { jsPDF } from "jspdf";
 import { formatPayloadAvailability } from "../core/payloadAvailability.js";
 import { formatDate, formatTime } from "../utils/helpers.js";
@@ -7,6 +9,7 @@ import { buildOgimetGrametUrl } from "./ogimetGramet.js";
 import { notamAirports } from "../ui/notamPanel.js";
 import { notamLegValidity, formatNotamDate } from "../core/notamValidity.js";
 import { classifyNotam } from "../core/notamClassification.js";
+import { isNotamExcluded } from "../core/notamExclusions.js";
 import { sigmetRelevance, routeCorridor } from "../core/sigmetRelevance.js";
 
 async function request(url, field) {
@@ -71,9 +74,9 @@ export function createBriefingPdf(leg, aircraft, settings, index, reports) {
     const fields = [
         [["NÍVEL", leg.flightLevel || "--"], ["EET", formatTime(leg.schedule.eet)]],
         [["ETD - UTC", `${formatDate(leg.schedule.date)}  ${leg.schedule.etd || "--:--"}`], ["ETA - UTC", `${formatDate(leg.schedule.etaDate)}  ${leg.schedule.eta || "--:--"}`]],
-        [["COMB MÍNIMO", number(leg.fuel.total, settings.fuelUnit)], ["COMB A CONSUMIR", number(consumption, settings.fuelUnit)]],
-        [["PESO DE DEP", number(leg.weight.takeoff, "KG")], ["PESO DE POUSO", number(leg.weight.landing, "KG")]],
-        [["PAYLOAD / DISPONIBILIDADE RESTANTE", formatPayloadAvailability(leg.weight)], ["ALTERNATIVA", leg.route.alternate?.icao || "--"]]
+        [["COMB MÍNIMO", number(leg.fuel.total, aircraftFuelUnit(aircraft.model))], ["COMB A CONSUMIR", number(consumption, aircraftFuelUnit(aircraft.model))]],
+        [["PESO DE DEP", formatWeight(leg.weight.takeoff, aircraft.model)], ["PESO DE POUSO", formatWeight(leg.weight.landing, aircraft.model)]],
+        [["PAYLOAD / DISPONIBILIDADE RESTANTE", formatPayloadAvailability(leg.weight, aircraft.model)], ["ALTERNATIVA", leg.route.alternate?.icao || "--"]]
     ];
     for (const pair of fields) {
         doc.setFont("helvetica", "bold"); doc.setFontSize(12);
@@ -118,8 +121,8 @@ export function createBriefingPdf(leg, aircraft, settings, index, reports) {
     for (const airport of reports.notams) {
         line(airport.icao, 10, true);
         if (!airport.reports) { line("Consulta indisponível. Conferir no AISWEB."); continue; }
-        const selected = airport.reports.map(report => ({ report, status: notamLegValidity(report, leg) })).filter(item => ["Válidos", "Conferir validade"].includes(item.status));
-        if (!selected.length) line("Nenhum NOTAM coincidente entre os retornados.");
+        const selected = airport.reports.filter(report => !isNotamExcluded(settings, report, airport.icao)).map(report => ({ report, status: notamLegValidity(report, leg) })).filter(item => ["Válidos", "Conferir validade"].includes(item.status));
+        if (!selected.length) line(airport.reports.some(report => isNotamExcluded(settings, report, airport.icao)) ? "Nenhum NOTAM selecionado para este PDF." : "Nenhum NOTAM coincidente entre os retornados.");
         for (const { report, status } of selected) {
             const classification = classifyNotam(report);
             line(`${classification.category} ${classification.condition}`.toLocaleUpperCase("pt-BR"), 10, true);

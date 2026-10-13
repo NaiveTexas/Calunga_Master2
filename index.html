@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -10,7 +11,7 @@
     <link rel="apple-touch-icon" href="/pwa/icon-180.png">
     <link rel="icon" type="image/png" href="/pwa/icon-192.png">
 
-    <title>Calunga de Missão Aérea - Rumba</title>
+    <title>Calunga</title>
 
     <link rel="stylesheet" href="css/style.css">
     <!-- Palette trial: remove this line to restore the previous theme. -->
@@ -138,6 +139,9 @@
                         type="button"
                     >
                         ENRC HIGH
+                    </button>
+                    <button id="enrcPdfCharts" class="enrc-pdf-pilot" type="button" aria-pressed="true" hidden>
+                        Cartas PDF
                     </button>
                 </div>
 
@@ -299,7 +303,7 @@
 
                             <div class="field">
                                 <label class="field-label" for="flightLevel">Nível de Voo</label>
-                                <select id="flightLevel" class="field-control"><option>FL100</option></select>
+                                <select id="flightLevel" class="field-control"><option value="">Selecione o nível</option></select>
                             </div>
 
                             <div class="route-selector">
@@ -395,30 +399,7 @@
                                 FUEL PLANNING
                             </h2>
 
-                            <div class="fuel-unit-selector">
-
-                                <button
-                                    class="fuel-unit-button active"
-                                    data-fuel-unit="LB"
-                                >
-                                    LB
-                                </button>
-
-                                <button
-                                    class="fuel-unit-button"
-                                    data-fuel-unit="KG"
-                                >
-                                    KG
-                                </button>
-
-                                <button
-                                    class="fuel-unit-button"
-                                    data-fuel-unit="L"
-                                >
-                                    L
-                                </button>
-
-                            </div>
+                            <div class="fuel-unit-selector"></div>
 
                             <button
                                 id="restoreAutomaticFuel"

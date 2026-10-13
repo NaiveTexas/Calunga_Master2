@@ -1,3 +1,4 @@
+import { formatWeight } from "../core/weightUnits.js";
 import { mission } from "../models/missions.js";
 import { aircraftFuelUnit } from "../core/fuelUnits.js";
 import { formatTime, formatDate } from "../utils/helpers.js";
@@ -25,12 +26,12 @@ export function updateDashboard() {
             "dashboard-aircraft": mission.aircraft.registration ? mission.aircraft.registration.registration + " (" + mission.aircraft.model.name + ")" : "----",
             "dashboard-min-fuel": Math.round(fuel.total) + " " + aircraftFuelUnit(mission.aircraft.model),
             "dashboard-fuel-on-board": Math.round(fuel.onboard) + " " + aircraftFuelUnit(mission.aircraft.model),
-            "dashboard-pbo": Math.round(weight.basic + weight.crew) + " KG",
-            "dashboard-payload": Math.round(weight.payload) + " KG",
-            "dashboard-dep-weight": Math.round(weight.takeoff) + " KG",
-            "dashboard-fuel-weight": Math.round(weight.fuel) + " KG",
-            "dashboard-landing-weight": Math.round(weight.landing) + " KG",
-            "dashboard-availability": Number.isFinite(weight.availability?.remaining) ? Math.floor(weight.availability.remaining) + " KG" : "Não informado"
+            "dashboard-pbo": formatWeight(weight.basic + weight.crew, mission.aircraft.model),
+            "dashboard-payload": formatWeight(weight.payload, mission.aircraft.model),
+            "dashboard-dep-weight": formatWeight(weight.takeoff, mission.aircraft.model),
+            "dashboard-fuel-weight": formatWeight(weight.fuel, mission.aircraft.model),
+            "dashboard-landing-weight": formatWeight(weight.landing, mission.aircraft.model),
+            "dashboard-availability": Number.isFinite(weight.availability?.remaining) ? formatWeight(weight.availability.remaining, mission.aircraft.model, Math.floor) : "Não informado"
         };
         for (const [name, value] of Object.entries(values)) field(name).textContent = value;
     });

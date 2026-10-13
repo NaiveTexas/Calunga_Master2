@@ -5,6 +5,20 @@ import { serializeMission, parseMission, restoreMission, DRAFT_KEY } from "../js
 import { recalculateMission } from "../js/core/missionEngine.js";
 import { parseHTML } from "linkedom";
 import { readFileSync } from "node:fs";
+import { setNotamExcluded, isNotamExcluded } from "../js/core/notamExclusions.js";
+
+test("NOTAM exclusions survive saved missions and old missions clear them", () => {
+    const report = { loc: "SBNT", n: "B0123/26", b: "2609010000", e: "TEST" };
+    setNotamExcluded(mission.settings, report, "SBNT", true);
+    const data = parseMission(serializeMission());
+    restoreMission(data);
+    assert.equal(isNotamExcluded(mission.settings, report), true);
+    assert.equal(isNotamExcluded(mission.settings, { ...report, e: "REVISED" }), false);
+    assert.equal(isNotamExcluded(mission.settings, { ...report, loc: "SBGL" }), false);
+    delete data.settings.excludedNotams;
+    restoreMission(data);
+    assert.equal(isNotamExcluded(mission.settings, report), false);
+});
 
 test("mission round trip preserves all leg inputs and recalculates results", () => {
     const airport = (icao, longitude) => ({ type: "AIRPORT", icao, name: icao, position: { latitude: -5, longitude } });

@@ -48,12 +48,13 @@ export function parseMission(text) {
     const registration = getAircraftRegistration(data.aircraft?.registration);
     check(model && model.planningAvailable !== false && registration?.model?.name === model.name, "aeronave ou matrícula");
     check(["LB", "KG"].includes(data.settings?.fuelUnit), "unidade");
+    check(data.settings.excludedNotams == null || (Array.isArray(data.settings.excludedNotams) && data.settings.excludedNotams.every(key => typeof key === "string")), "NOTAMs excluídos");
     check(Array.isArray(data.crew) && data.crew.length > 0 && data.crew.length <= 100, "tripulação");
     data.crew.forEach(member => check(["1P", "2P", "MC", "NV", "IN NV", "IC", "ML", "IL"].includes(member.role) && number(member.weight) && member.weight >= 0, "tripulante"));
     check(Array.isArray(data.legs) && data.legs.length > 0 && data.legs.length <= 100, "pernas");
     check(Number.isInteger(data.activeIndex) && data.activeIndex >= 0 && data.activeIndex < data.legs.length, "perna selecionada");
     for (const leg of data.legs) {
-        check(level(leg.flightLevel) && number(leg.refuel) && leg.refuel >= 0, "nível ou reabastecimento");
+        check((leg.flightLevel === "" || level(leg.flightLevel)) && number(leg.refuel) && leg.refuel >= 0, "nível ou reabastecimento");
         for (const key of ["origin", "departure", "fuel"]) check(typeof leg.automatic?.[key] === "boolean", "vínculo entre pernas");
         check(leg.route && Array.isArray(leg.route.waypoints) && leg.route.waypoints.length <= 1000, "rota");
         for (const key of ["origin", "destination", "alternate"]) point(leg.route[key], true);
@@ -96,4 +97,5 @@ export function restoreMission(data) {
     mission.settings.fuelUnit = unit;
     mission.settings.modelChosen = data.settings.modelChosen !== false;
     mission.settings.registrationChosen = data.settings.registrationChosen !== false;
+    mission.settings.excludedNotams = [...(data.settings.excludedNotams || [])];
 }

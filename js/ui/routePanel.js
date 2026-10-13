@@ -1,4 +1,7 @@
 import { autocomplete } from "./autocomplete.js";
+import { createSuggestedRouteControl } from "./suggestedRouteButton.js";
+import { loadSuggestedRoute } from "../services/suggestedRoute.js";
+import { orderAlternateOptions } from "../core/alternateOptions.js";
 import { getAirportList } from "../database/airports.js";
 import Sortable from "sortablejs";
 import { legDistance } from "./legCards.js";
@@ -26,8 +29,14 @@ import {
 let waypointSortable = null;
 
 export function initializeRoutePanel() {
+    const waypointPanel = document.getElementById("waypointPanel");
+    const suggestion = createSuggestedRouteControl(loadSuggestedRoute);
+    suggestion.id = "suggestedRouteControl";
+    waypointPanel.before(suggestion);
+    waypointPanel.addEventListener("suggested-route-applied", renderWaypointPanel);
     for (const [id, property] of [["departure", "origin"], ["destination", "destination"], ["alternate", "alternate"]]) {
-        autocomplete({ id, data: getAirportList(), target: mission.route, property });
+        autocomplete({ id, data: getAirportList(), target: mission.route, property,
+            ...(property === "alternate" ? { showOnFocus: true, transformOptions: options => orderAlternateOptions(options, mission.route.destination) } : {}) });
     }
 
     refreshRouteInputs();

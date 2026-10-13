@@ -1,0 +1,33 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { parseHTML } from "linkedom";
+import { mission, missionLegs } from "../js/models/missions.js";
+import { createSuggestedRouteControl } from "../js/ui/suggestedRouteButton.js";
+const airport = icao => ({ icao, position: { latitude: 0, longitude: 1 } });
+const tick = () => new Promise(resolve => setTimeout(resolve, 0));
+
+test("suggestion replaces points only on success and rejects stale responses", async () => {
+    const { window, document } = parseHTML('<div id="waypointPanel"></div>');
+    globalThis.window = window; globalThis.document = document; globalThis.CustomEvent = window.CustomEvent;
+    const leg = missionLegs.active();
+    leg.route.origin = airport("SBYS"); leg.route.destination = airport("SBAN");
+    leg.route.waypoints = [{ ident: "OLD", type: "FIX", position: { latitude: 0, longitude: .5 } }];
+    let complete, fail;
+    const control = createSuggestedRouteControl(() => new Promise((resolve, reject) => { complete = resolve; fail = reject; }));
+    const button = control.querySelector("button");
+    button.click();
+    assert.equal(button.disabled, true);
+    fail(new Error("offline")); await tick();
+    assert.equal(leg.route.waypoints[0].ident, "OLD");
+    button.click();
+    leg.route.destination = airport("SBRF");
+    complete({ points: [], total: 1, direct: 1 }); await tick();
+    assert.equal(leg.route.waypoints[0].ident, "OLD");
+    button.click();
+    complete({ points: [{ ident: "NEW", type: "FIX", position: { latitude: 0, longitude: .7 } }], total: 2, direct: 1 }); await tick();
+    assert.deepEqual(leg.route.waypoints.map(p => p.ident), ["NEW"]);
+    assert.equal(leg.routeConfirmed, "");
+    button.click();
+    complete({ points: [], total: 1, direct: 1 }); await tick();
+    assert.equal(leg.route.waypoints.length, 0);
+});

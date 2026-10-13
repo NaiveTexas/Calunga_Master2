@@ -1,6 +1,24 @@
 import { deceaClient } from "../clients/deceaClient.js";
 import { getCachedResponse } from "../cache/responseCache.js";
 
+export async function loadTerminals() {
+    const data = await getCachedResponse("navigation:terminals", async () => (await deceaClient.get(
+        "https://geoaisweb.decea.mil.br/geoserver/ICA/ows",
+        { params: { service: "WFS", version: "1.0.0", request: "GetFeature", typeName: "ICA:TMA", outputFormat: "application/json", srsName: "EPSG:4326" } }
+    )).data);
+    if (!Array.isArray(data.features) || !data.features.length) throw new Error("Base de TMA indisponível");
+    return data;
+}
+
+export async function loadFirSectors() {
+    const data = await getCachedResponse("navigation:fir-sectors", async () => (await deceaClient.get(
+        "https://geoaisweb.decea.mil.br/geoserver/ICA/ows",
+        { params: { service: "WFS", version: "1.0.0", request: "GetFeature", typeName: "ICA:SETOR_FIR", outputFormat: "application/json", srsName: "EPSG:4326" } }
+    )).data);
+    if (!Array.isArray(data.features) || !data.features.length) throw new Error("Base de setores de FIR indisponível");
+    return data;
+}
+
 export async function loadFixes() {
     const data = await getCachedResponse(
         "navigation:fixes",
@@ -49,21 +67,29 @@ export async function loadFixes() {
 export async function loadAirports() {
     const data = await getCachedResponse(
         "navigation:airports",
-        async () => (
-            await deceaClient.get(
+        async () => {
+            const response = await deceaClient.get(
                 "https://geoaisweb.decea.mil.br/geoserver/ows",
                 {
+                    timeout: 45_000,
                     params: {
                         service: "WFS",
                         version: "1.0.0",
                         request: "GetFeature",
                         typeName: "ICA:airport",
                         outputFormat: "application/json",
-                        srsName: "EPSG:4326"
+                        srsName: "EPSG:4326",
+                        propertyName: "localidade_id,nome,cidade,uf,latitude_dec,longitude_dec,elevacao"
                     }
                 }
-            )
-        ).data
+            );
+            if (!Array.isArray(response.data?.features) || !response.data.features.length) {
+                throw new Error("Resposta de aeródromos vazia ou inválida");
+            }
+            return response.data;
+        },
+        undefined,
+        { staleIfErrorMs: 24 * 60 * 60 * 1000 }
     );
     const features =
         data.features || [];

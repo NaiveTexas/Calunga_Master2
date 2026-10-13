@@ -1,3 +1,4 @@
+import { formatWeight } from "../core/weightUnits.js";
 import { createLegCards } from "./legCards.js";
 import { createPayloadEditor } from "./payloadPanel.js";
 import { mission } from "../models/missions.js";
@@ -30,20 +31,20 @@ export function updateWeightPanel() {
     renderCards((leg, { card, field, subtitle, refreshPayload, availability, done }) => {
         const pending = !payloadReady(leg) || !weightReviewMatches(mission, leg);
         card.classList.toggle("leg-pending", pending);
-        subtitle.textContent = `Decolagem: ${Math.round(leg.weight.takeoff)} KG · Pouso: ${Math.round(leg.weight.landing)} KG`;
+        subtitle.textContent = `Decolagem: ${formatWeight(leg.weight.takeoff, mission.aircraft.model)} · Pouso: ${formatWeight(leg.weight.landing, mission.aircraft.model)}`;
         if (pending) subtitle.textContent += " · Pendente de conclusão";
         for (const [name, property] of [["basicWeight", "basic"], ["crewWeight", "crew"], ["payloadWeight", "payload"], ["fuelWeight", "fuel"], ["takeoffWeight", "takeoff"], ["landingWeight", "landing"]]) {
-            field(name).textContent = `${Math.round(leg.weight[property])} KG`;
+            field(name).textContent = formatWeight(leg.weight[property], mission.aircraft.model);
         }
-        field("payloadWeight").textContent = leg.payload.entered === false ? "Pendente" : `${Math.round(leg.weight.payload)} KG`;
+        field("payloadWeight").textContent = leg.payload.entered === false ? "Pendente" : formatWeight(leg.weight.payload, mission.aircraft.model);
         const remaining = leg.weight.availability?.remaining;
-        availability.textContent = Number.isFinite(remaining) ? `${Math.floor(remaining)} KG` : "Não informado";
+        availability.textContent = Number.isFinite(remaining) ? formatWeight(remaining, mission.aircraft.model, Math.floor) : "Não informado";
         for (const [id, phase, actual, maximum] of [["takeoffWeight", "takeoff", leg.weight.takeoff, mission.aircraft.model.maxTakeoffWeight], ["landingWeight", "landing", leg.weight.landing, mission.aircraft.model.maxLandingWeight]]) {
             const value = field(id), label = value.closest(".field").querySelector(".field-label");
-            value.textContent = `${Math.round(actual)} KG`;
+            value.textContent = formatWeight(actual, mission.aircraft.model);
             const excess = Number.isFinite(maximum) && maximum > 0 && actual > maximum;
             value.classList.toggle("weight-exceeded", excess);
-            value.title = excess ? `Peso acima do limite de ${maximum.toLocaleString("pt-BR")} kg (excesso: ${Math.ceil(actual - maximum)} kg)` : "";
+            value.title = excess ? `Peso acima do limite de ${formatWeight(maximum, mission.aircraft.model)} (excesso: ${formatWeight(actual - maximum, mission.aircraft.model, Math.ceil)})` : "";
             value.tabIndex = value.title ? 0 : -1;
             label.querySelector(".weight-alert")?.remove();
             if (excess) { const icon = document.createElement("span"); icon.className = "weight-alert"; icon.textContent = " ⛔"; icon.setAttribute("aria-label", "Peso acima do limite"); label.append(icon); }

@@ -1,6 +1,14 @@
 import { Router } from "express";
-import { loadFixes, loadAirports, loadVors } from "../services/navigationService.js";
+import { loadFixes, loadAirports, loadVors, loadTerminals, loadFirSectors } from "../services/navigationService.js";
 export const router = Router();
+router.get("/api/navigation/fir-sectors", async (req, res) => {
+    try { res.json(await loadFirSectors()); }
+    catch { res.status(502).json({ message: "Não foi possível consultar as divisas dos setores de FIR." }); }
+});
+router.get("/api/navigation/terminals", async (req, res) => {
+    try { res.json(await loadTerminals()); }
+    catch { res.status(502).json({ message: "Não foi possível consultar os limites das TMA." }); }
+});
 router.get("/api/navigation/fixes", async (req, res) => {
     try {
         res.json(await loadFixes());

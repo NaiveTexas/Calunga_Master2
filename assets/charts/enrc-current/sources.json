@@ -1,0 +1,113 @@
+{
+  "index": "https://aisweb.decea.mil.br/inc/cartas/enrc/index.cfm",
+  "charts": [
+    {
+      "chart": "ENRC_L1",
+      "edition": "03/09/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=d04e19d6-4b3c-4f1d-a30cfe3871b062d3&nome=ENRC%20L1",
+      "sha256": "8231040b059b47dfc9da1e16a50b2d0ef16e18877d1378b59876a047b3dce5ff"
+    },
+    {
+      "chart": "ENRC_L2",
+      "edition": "03/09/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=ae612a1d-8dc2-4105-b5c735e98bcf69b3&nome=ENRC%20L2",
+      "sha256": "d18e03e543f2749fce4fd2d5c71b81b97b9ad10ccfa44c75c579081720ae0416"
+    },
+    {
+      "chart": "ENRC_L3",
+      "edition": "03/09/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=6883fc34-17cb-4987-9b34dc86efbd1eeb&nome=ENRC%20L3",
+      "sha256": "f872ab9932d59cf28d95c121941a5b0b5b8e1b56e5373bbda15dec21739e1b71"
+    },
+    {
+      "chart": "ENRC_L4",
+      "edition": "11/06/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=af9bc32e-bd64-4f46-b0656cbc3ad2cc37&nome=ENRC%20L4",
+      "sha256": "41985e30cf8823bcbd564677a85dbeb883955d24adbfcaed61054c8f0426a90c"
+    },
+    {
+      "chart": "ENRC_L5",
+      "edition": "03/09/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=5a6d26aa-156e-48f5-8c3a3236e1b2c6ee&nome=ENRC%20L5",
+      "sha256": "c3ed31d563e12a0781a5a74c7e722ee1cb8c22f48dac28129bde04cce9e1dec1"
+    },
+    {
+      "chart": "ENRC_L6",
+      "edition": "06/08/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=b9e63d21-9d73-4c18-9142bf81227b5279&nome=ENRC%20L6",
+      "sha256": "fdce08c4a5640d92d4352c2b8cd2bf2b71ba95214fb857d3fea1117979d7bc58"
+    },
+    {
+      "chart": "ENRC_L7",
+      "edition": "11/06/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=6dec370f-aadc-457f-8cdae62d4554d559&nome=ENRC%20L7",
+      "sha256": "fb8ef272a9251f864cff7625126747663e8007becfa3833ddb385d96a7601256"
+    },
+    {
+      "chart": "ENRC_L8",
+      "edition": "11/06/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=3e560047-79d7-4313-abbeeb44b8619613&nome=ENRC%20L8",
+      "sha256": "c48ba7760656e82d1b65a628424a17755b5428bc2ff6eab308889044418db1dd"
+    },
+    {
+      "chart": "ENRC_L9",
+      "edition": "14/05/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=14bbdffc-0298-4c7d-b09be5c565e1af19&nome=ENRC%20L9",
+      "sha256": "d0c79b590915e67565f1b93308fda0a448c402a698a9f83ad89c9d4f8e846b2c"
+    },
+    {
+      "chart": "ENRC_H1",
+      "edition": "09/07/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=02b23883-4766-4547-9c5ada5d0d491936&nome=ENRC%20H1",
+      "sha256": "efcda5734aad79ad65bed49b4953962d7466fbc721cddbc3a3fd69dda36cebe6"
+    },
+    {
+      "chart": "ENRC_H2",
+      "edition": "03/09/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=743a9ee6-8142-46b2-85045784b0ca6736&nome=ENRC%20H2",
+      "sha256": "0a2af059d7d01f8e05e28cec552704f476a539e3a1131dc97c51134fa497139a"
+    },
+    {
+      "chart": "ENRC_H3",
+      "edition": "06/08/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=2c86e8e0-365c-4430-b3b94760371e201c&nome=ENRC%20H3",
+      "sha256": "d3856b50ff459549f6473103f1ed34bbcd7ef266222d5f7b961935ea91da7184"
+    },
+    {
+      "chart": "ENRC_H4",
+      "edition": "09/07/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=ce132182-a9a8-4e23-a94a5de718f80c62&nome=ENRC%20H4",
+      "sha256": "eb35fa2859a279939cf45f4e2a691ee2e5c6b2e8e264e76fd98239b542ac6c19"
+    },
+    {
+      "chart": "ENRC_H5",
+      "edition": "06/08/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=a0751ea4-73e0-42e7-a2b6fa3748042d72&nome=ENRC%20H5",
+      "sha256": "854decf73f8a39b7108f5ed002148364b3b4ffd2588a6af68cd72f3b322f73d5"
+    },
+    {
+      "chart": "ENRC_H6",
+      "edition": "06/08/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=d3b6dfa7-fb7c-4fe3-805706b211e17bfc&nome=ENRC%20H6",
+      "sha256": "1e5893a6cfca14dd85ff5ae556b03291aedafd3cfc412b7474f44a4fabb2d6f0"
+    },
+    {
+      "chart": "ENRC_H7",
+      "edition": "11/06/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=e39952d4-fbe0-469d-aa727b128ea1d64c&nome=ENRC%20H7",
+      "sha256": "346036f12659700e4daa6972d8b82ecc2ddb4b3c693e6d31925e3d44346b7a16"
+    },
+    {
+      "chart": "ENRC_H8",
+      "edition": "11/06/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=ee6a83fc-7123-4476-a5b79c70861b7d19&nome=ENRC%20H8",
+      "sha256": "949c3fee716f6eb4ea99c5979236a4dc3498892dc72045ab2337730d955a316e"
+    },
+    {
+      "chart": "ENRC_H9",
+      "edition": "16/04/2026",
+      "url": "https://aisweb.decea.mil.br/download/?arquivo=bb38893e-0778-4935-a5f184b6ac1938c5&nome=ENRC%20H9",
+      "sha256": "2b6de747e1d41e2abefd82cc3c09c5eb3cafc6c2dd026bec35187dc2f6d7e802"
+    }
+  ]
+}

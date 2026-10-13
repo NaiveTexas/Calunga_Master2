@@ -1,6 +1,9 @@
 import "ol/ol.css";
 import Map from "ol/Map.js";
 import View from "ol/View.js";
+import { loadStaticEnrc, staticEnrcVisibility } from "../enrc/staticEnrc.js";
+import { defaults as defaultInteractions } from "ol/interaction/defaults.js";
+import { defaults as defaultControls } from "ol/control/defaults.js";
 
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
@@ -44,6 +47,8 @@ let loadedENRCLowExtent = null;
 let loadedENRCHighExtent = null;
 
 let activeENRCType = "LOW";
+let pdfCharts = [];
+let pdfChartsEnabled = true;
 
 
 //==========================================//
@@ -60,6 +65,18 @@ function updateENRCVisibility() {
 
     const isVisible =
         map.getView().getZoom() >= ENRC_MIN_ZOOM;
+
+    const zoom = map.getView().getZoom();
+    const replacements = { LOW: [], HIGH: [] };
+    for (const entry of pdfCharts) {
+        const state = staticEnrcVisibility(entry.manifest, zoom, activeENRCType, entry.failed || !pdfChartsEnabled);
+        entry.layer.setVisible(state.visible);
+        if (state.replaceWms) replacements[entry.manifest.type || 'LOW'].push(entry.manifest.chart);
+    }
+    for (const [type, layer] of [['LOW', enrcLowLayer], ['HIGH', enrcHighLayer]]) {
+        layer.set('staticCharts', replacements[type]);
+        setENRCCharts(layer, layer.get('enrcCharts') || []);
+    }
 
     enrcLowLayer.setVisible(
         isVisible &&
@@ -275,7 +292,7 @@ function initializeENRCControls() {
 //        INITIALIZE OPENLAYERS MAP         //
 //==========================================//
 
-async function initializeOpenLayersMap() {
+export async function initializeOpenLayersMap() {
 
     const target =
         document.getElementById(
@@ -290,19 +307,13 @@ async function initializeOpenLayersMap() {
     }
 
 
-    await loadENRCIndex(
-        "LOW"
-    );
-
-
-    await loadENRCIndex(
-        "HIGH"
-    );
-
-
     map = new Map({
 
         target,
+        interactions: defaultInteractions({ zoomDuration: 0 }),
+        controls: defaultControls({ zoomOptions: { duration: 0 } }),
+        // Request genuinely larger WMS images, including on standard-density PCs.
+        pixelRatio: 2,
 
         loadTilesWhileAnimating: true,
         loadTilesWhileInteracting: true,
@@ -329,6 +340,7 @@ async function initializeOpenLayersMap() {
 
                 ]),
 
+            constrainResolution: true,
             zoom: 5
 
         })
@@ -342,6 +354,7 @@ async function initializeOpenLayersMap() {
 
     enrcLowLayer =
         createENRCLayer();
+    enrcLowLayer.setVisible(false);
 
 
     map.addLayer(
@@ -371,12 +384,43 @@ async function initializeOpenLayersMap() {
     //          INITIAL ENRC                //
     //======================================//
 
+    routeLayer = createRouteLayer();
+    map.addLayer(routeLayer);
+    synchronizeRouteLayer(routeLayer);
+    initializeSigmetLayer(map);
     initializeENRCControls();
     setActiveENRC("LOW");
+    const pdfButton = document.getElementById('enrcPdfCharts');
+    loadStaticEnrc('/enrc-static/pdf-charts.json').then(result => {
+        if (!result?.length || !pdfButton) return;
+        pdfCharts = result;
+        for (const entry of pdfCharts) {
+            map.getLayers().insertAt(1, entry.layer);
+            entry.layer.getSource().on('tileloaderror', () => {
+                entry.failed = true;
+                pdfButton.title = `${entry.manifest.chart}: pacote indisponível, usando o serviço WMS.`;
+                updateENRCVisibility();
+            });
+        }
+        pdfButton.hidden = false;
+        pdfButton.setAttribute('aria-pressed', String(pdfChartsEnabled));
+        pdfButton.title = pdfCharts.map(entry => `${entry.manifest.chart}: ${entry.manifest.edition}`).join(' | ');
+        pdfButton.addEventListener('click', () => {
+            pdfChartsEnabled = !pdfChartsEnabled;
+            pdfButton.setAttribute('aria-pressed', String(pdfChartsEnabled));
+            updateENRCVisibility();
+        });
+        updateENRCVisibility();
+    });
 
     map.getView().on(
         "change:resolution",
-        updateENRCVisibility
+        () => {
+            // A zoomed-in view needs fewer charts than the previous overview.
+            loadedENRCLowExtent = null;
+            loadedENRCHighExtent = null;
+            if (updateENRCVisibility()) updateVisibleENRC(activeENRCType);
+        }
     );
 
 
@@ -394,23 +438,17 @@ async function initializeOpenLayersMap() {
     );
 
 
+    // Local charts and their controls work while remote indexes are loading.
+    const indexes = await Promise.allSettled([loadENRCIndex('LOW'), loadENRCIndex('HIGH')]);
+    for (const result of indexes) {
+        if (result.status === 'rejected') console.warn('ENRC index unavailable:', result.reason);
+    }
+    loadedENRCLowExtent = null;
+    loadedENRCHighExtent = null;
+    setActiveENRC(activeENRCType);
+
     //======================================//
     //            MISSION ROUTE             //
     //======================================//
 
-    routeLayer =
-        createRouteLayer();
-
-
-    map.addLayer(
-        routeLayer
-    );
-
-
-    synchronizeRouteLayer(routeLayer);
-    initializeSigmetLayer(map);
-
 }
-
-
-initializeOpenLayersMap();

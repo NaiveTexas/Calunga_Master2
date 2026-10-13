@@ -1,6 +1,9 @@
+// weightUnit controls UI/PDF units. Weight limits in this database remain KG.
+// For the future C-98A use weightUnit: "LB" and fuel.defaultUnit: "LB".
 export const aircraftModels = [
     {
         name: "C-95AM",
+        weightUnit: "KG",
         image: "assets/aircrafts/C95.png",
         description: "Bandeirante",
 
@@ -12,7 +15,7 @@ export const aircraftModels = [
         },
 
         fuelFlow: 600,
-        maxFuel: 3800,
+        maxFuel: 3000,
         taxiFuel: 30,
         procedureTime: 10,
         reserveTime: 45,
@@ -25,6 +28,7 @@ export const aircraftModels = [
 
     {
         name: "C-95BM",
+        weightUnit: "KG",
         image: "assets/aircrafts/C95.png",
         description: "Bandeirante",
 
@@ -36,7 +40,7 @@ export const aircraftModels = [
         },
 
         fuelFlow: 600,
-        maxFuel: 3800,
+        maxFuel: 3000,
         taxiFuel: 30,
         procedureTime: 10,
         reserveTime: 45,
@@ -49,6 +53,7 @@ export const aircraftModels = [
 
     {
         name: "C-98",
+        weightUnit: "LB",
         image: "assets/aircrafts/C-98.png",
         description: "Grand Caravan",
 
@@ -60,17 +65,18 @@ export const aircraftModels = [
         },
         
         fuelFlow: 350,
-        maxFuel: 5000,
+        maxFuel: 2200,
         taxiFuel: 30,
         procedureTime: 10,
         reserveTime: 45,
 
-        maxTakeoffWeight: 0,
-        maxLandingWeight: 0
+        maxTakeoffWeight: 8750,
+        maxLandingWeight: 8700
     },
 
     {
         name: "T-27",
+        weightUnit: "KG",
         image: "assets/aircrafts/T-27M.png",
         description: "Tucano",
 
@@ -93,6 +99,7 @@ export const aircraftModels = [
     },
     {
         name: "A-29",
+        weightUnit: "KG",
         image: "assets/aircrafts/A-29.png",
         description: "Super Tucano",
         // Preencha com os dados aprovados e cadastre as matrículas antes de habilitar.

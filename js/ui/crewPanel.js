@@ -1,3 +1,4 @@
+import { aircraftWeightUnit, weightInputValue, inputWeightKg } from "../core/weightUnits.js";
 import {
     mission
 } from "../models/missions.js";
@@ -35,6 +36,9 @@ function createCrewRow(crewMember, index) {
 
     row.appendChild(createRoleSelect(crewMember));
     row.appendChild(createWeightInput(crewMember));
+    const unit = document.createElement("span");
+    unit.textContent = aircraftWeightUnit(mission.aircraft.model);
+    row.appendChild(unit);
 
     if (!requiredRoles.includes(crewMember.role)) {
         row.appendChild(createRemoveButton(index));
@@ -118,13 +122,15 @@ function createWeightInput(crewMember) {
 
     input.min = 0;
 
-    input.step = 1;
+    input.step = "any";
+    input.title = `Peso (${aircraftWeightUnit(mission.aircraft.model)})`;
+    input.setAttribute("aria-label", input.title);
 
-    input.value = crewMember.weight;
+    input.value = weightInputValue(crewMember.weight, mission.aircraft.model);
 
     input.addEventListener("change", () => {
 
-        crewMember.weight = Number(input.value);
+        crewMember.weight = inputWeightKg(input.value, mission.aircraft.model);
 
         updateMission();
 

@@ -11,7 +11,7 @@ const projectionExtent =
     projection.getExtent();
 
 const startResolution =
-    getWidth(projectionExtent) / 512;
+    getWidth(projectionExtent) / 256;
 
 const resolutions =
     new Array(22);
@@ -37,7 +37,7 @@ const tileGrid =
         resolutions,
 
         tileSize:
-            512
+            256
 
     });
 //==========================================//
@@ -48,11 +48,11 @@ export function createENRCLayer(
     initialCharts = []
 ) {
 
-    return new TileLayer({
+    const layer = new TileLayer({
 
-        // Keep nearby zoom levels ready and retain more previously viewed tiles.
-        preload: 2,
-        cacheSize: 768,
+        // Prioritize visible detail; retina tiles are 512px, not 1024px.
+        preload: 0,
+        cacheSize: 256,
 
         properties: {
 
@@ -63,6 +63,7 @@ export function createENRCLayer(
 source: new TileWMS({
 
     transition: 0,
+    zDirection: -1,
 
     url:
         "/api/charts/enrc/wms",
@@ -79,10 +80,7 @@ source: new TileWMS({
             "image/png",
 
         TRANSPARENT:
-            true,
-
-        FORMAT_OPTIONS:
-            "dpi:192"
+            true
 
     },
 
@@ -97,6 +95,10 @@ source: new TileWMS({
 })
 
     });
+    const source = layer.getSource();
+    const tileUrl = source.getTileUrlFunction();
+    source.setTileUrlFunction((...args) => source.getParams().LAYERS ? tileUrl.apply(source, args) : undefined);
+    return layer;
 
 }
 
@@ -120,9 +122,12 @@ export function setENRCCharts(
     const source =
         layer.getSource();
 
+    layer.set("enrcCharts", charts);
+    const staticCharts = layer.get("staticCharts") || [layer.get("staticChart")];
+
 
     const layers =
-        charts.join(",");
+        charts.filter(chart => !staticCharts.includes(chart)).join(",");
 
 
     const currentLayers =

@@ -70,7 +70,7 @@ function updateAirportCaption(config, input) {
     
 function initializeInput(config, input, list, state){
 
-    input.addEventListener("input", () => {
+    const renderOptions = () => {
 
         updateAirportCaption(config, input);
         clearList(list);
@@ -78,7 +78,8 @@ function initializeInput(config, input, list, state){
         state.selectedIndex = -1;
 
         const search = input.value.trim().toUpperCase();
-        const filtered = filterOptions(search, config.data);
+        const matches = filterOptions(search, config.data);
+        const filtered = config.transformOptions ? config.transformOptions(matches) : matches;
 
         if(filtered.length === 0){
             hideList(list);
@@ -98,7 +99,9 @@ function initializeInput(config, input, list, state){
 
             list.appendChild(element);
         });
-    });
+    };
+    input.addEventListener("input", renderOptions);
+    if (config.showOnFocus) input.addEventListener("focus", renderOptions);
 }
 
 function initializeKeyboard(config, input, list, state){

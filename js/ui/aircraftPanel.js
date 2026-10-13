@@ -16,12 +16,13 @@ function initializeFlightLevelSelector() {
         return;
     }
 
-    const initialValue =
-        mission.aircraft.flightLevel ||
-        selector.value ||
-        "FL100";
+    const initialValue = mission.aircraft.flightLevel || "";
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Selecione o nível";
 
     selector.replaceChildren(
+        placeholder,
         ...FLIGHT_LEVELS.map(level => {
 
             const option = document.createElement("option");
@@ -42,7 +43,7 @@ function initializeFlightLevelSelector() {
         )
     )
         ? initialValue
-        : "FL100";
+        : "";
 
     mission.aircraft.flightLevel = selector.value;
 

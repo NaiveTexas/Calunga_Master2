@@ -1,11 +1,14 @@
 import { deceaClient } from "../clients/deceaClient.js";
 import { getCachedResponse } from "../cache/responseCache.js";
+import { createChartTileCache } from "../cache/chartTileCache.js";
+const cachedTile = createChartTileCache();
 
 export async function loadEnrcWms(query) {
-    return deceaClient.get(
+    const key = JSON.stringify(Object.keys(query).sort().map(key => [key, query[key]]));
+    return cachedTile(key, () => deceaClient.get(
         "https://geoaisweb.decea.mil.br/geoserver/ICA/wms",
         { params: { ...query }, responseType: "arraybuffer" }
-    );
+    ));
 }
 
 function loadEnrcIndex(type, typeName) {

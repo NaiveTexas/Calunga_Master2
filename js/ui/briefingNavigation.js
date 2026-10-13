@@ -123,7 +123,8 @@ export function initializeBriefingNavigation() {
     const destinationCard = document.getElementById("destination").closest(".autocomplete");
     originCard.classList.add("guided-origin");
     destinationCard.classList.add("guided-destination");
-    originCard.after(document.getElementById("waypointPanel"), destinationCard);
+    const suggestion = document.getElementById("suggestedRouteControl");
+    originCard.after(...[suggestion, document.getElementById("waypointPanel"), destinationCard].filter(Boolean));
     const distance = document.getElementById("routeTotalDistance");
     if (distance) destinationCard.append(distance);
     const hint = document.createElement("div");

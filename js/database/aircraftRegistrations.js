@@ -2,6 +2,7 @@ import {
     getAircraftModel
 } from "./aircraftModels.js";
 
+// Basic weights remain in KG, including models displayed in LB.
 const aircraftRegistrations = [
     {
     registration: "FAB2299",

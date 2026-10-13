@@ -9,3 +9,9 @@ dist/
 **/.env.*
 !**/.env.example
 *.log
+tmp/enrc-python/
+tmp/pmtiles-python/
+tmp/enrc-aborted*/
+__pycache__/
+
+tmp/

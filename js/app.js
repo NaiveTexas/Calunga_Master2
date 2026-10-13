@@ -14,7 +14,7 @@ import { initializeWeatherPanel, updateWeatherBriefing } from "./ui/weatherPanel
 import { initializeGrametPanel } from "./ui/grametPanel.js";
 import { initializeIcons } from "./ui/icons.js";
 import { showAppStatus, hideAppStatus } from "./ui/appStatus.js";
-import "../map/engine/openLayersMap.js";
+import { initializeOpenLayersMap } from "../map/engine/openLayersMap.js";
 import { recoverDraft, initializeMissionStoragePanel } from "./ui/missionStoragePanel.js";
 import { initializeInstallApp } from "./ui/installApp.js";
 initializeInstallApp();
@@ -22,6 +22,11 @@ initializeInstallApp();
 async function initializeApp() {
     showAppStatus("Carregando dados de navegação…");
     initializeMissionController();
+    initializeOpenLayersMap().catch(error => {
+        console.error("Falha ao carregar cartas:", error);
+        document.getElementById("enrcZoomNotice").textContent = "Cartas indisponiveis. Atualize a pagina para tentar novamente.";
+        document.getElementById("enrcZoomNotice").hidden = false;
+    });
     try {
         await Promise.all([loadNavigationFixes(), loadAirports(), loadNavigationVORs()]);
         const recovered = recoverDraft();

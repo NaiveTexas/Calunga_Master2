@@ -5,6 +5,16 @@ import { updateMission } from "../core/missionEngine.js";
 import { createLegCards } from "./legCards.js";
 
 let renderCards;
+const controls = [
+    ["taxiFuel", "taxi", 10, 1000],
+    ["procedureFuel", "procedure", 10, 500],
+    ["reserveFuel", "reserve", 10, 1000],
+    ["extraFuel", "extra", 10, 1000],
+    ["fuelOnBoard", "onboard", 100, null]
+];
+const limitFor = (property, maximum) => property === "onboard"
+    ? (Number.isFinite(mission.aircraft.model.maxFuel) && mission.aircraft.model.maxFuel > 0 ? mission.aircraft.model.maxFuel : 0)
+    : maximum;
 const fuelText = value => Math.round(value).toLocaleString("pt-BR") + " " + aircraftFuelUnit(mission.aircraft.model);
 
 export function updateFuelPlanningPanel() {
@@ -18,9 +28,15 @@ export function updateFuelPlanningPanel() {
         for (const [id, property] of [["flightFuel", "flight"], ["alternateFuel", "alternate"], ["totalFuel", "total"], ["legLandingFuel", "arrival"]]) {
             field(id).textContent = fuelText(leg.fuel[property]);
         }
-        for (const [id, property] of [["taxiFuel", "taxi"], ["procedureFuel", "procedure"], ["reserveFuel", "reserve"], ["extraFuel", "extra"], ["fuelOnBoard", "onboard"]]) {
+        for (const [id, property, , maximum] of controls) {
             field(id).querySelector(".stepper-value").textContent = Math.round(leg.fuel[property]);
+            field(id).querySelector(".stepper-minus").disabled = leg.fuel[property] <= 0;
+            const plus = field(id).querySelector(".stepper-plus");
+            plus.setAttribute("aria-disabled", String(leg.fuel[property] >= limitFor(property, maximum)));
         }
+        field("fullFuel").disabled = limitFor("onboard") === 0;
+        field("fullFuel").title = `Máximo da aeronave: ${fuelText(limitFor("onboard"))}`;
+        field("fuelLimitMessage").textContent = "";
         field("legFuelConnection").hidden = index === 0;
         field("linkPreviousFuel").checked = leg.automatic.fuel;
         field("legRefuel").value = leg.refuel;
@@ -42,22 +58,27 @@ function bindFuelCard(leg, { field }) {
         restoreAutomaticFuelPlanning({ ...leg, aircraft: mission.aircraft });
         updateMission();
     });
-    const controls = [
-        ["taxiFuel", "taxi", 10, 1000],
-        ["procedureFuel", "procedure", 10, 500],
-        ["reserveFuel", "reserve", 10, 1000],
-        ["extraFuel", "extra", 10, 1000],
-        ["fuelOnBoard", "onboard", 100, 5000]
-    ];
+    field("fullFuel").addEventListener("click", () => {
+        const maximum = limitFor("onboard");
+        if (!maximum) return;
+        leg.fuel.onboard = maximum;
+        leg.automatic.fuel = false;
+        updateMission();
+    });
     for (const [id, property, step, max] of controls) {
         for (const [selector, sign] of [[".stepper-minus", -1], [".stepper-plus", 1]]) {
             const button = field(id).querySelector(selector);
             button.type = "button";
             button.setAttribute("aria-label", (sign > 0 ? "Aumentar " : "Diminuir ") + field(id).parentElement.querySelector(".field-label").textContent.trim());
             button.addEventListener("click", () => {
-                const value = leg.fuel[property] + sign * step;
-                const limit = property === "onboard" ? (mission.aircraft.model.maxFuel || max) : max;
-                if (value < 0 || value > limit) return;
+                const limit = limitFor(property, max);
+                if (sign > 0 && leg.fuel[property] >= limit) {
+                    field("fuelLimitMessage").textContent = property === "onboard"
+                        ? "Combustível máximo atingido"
+                        : "Limite deste campo atingido";
+                    return;
+                }
+                const value = sign > 0 ? Math.min(limit, leg.fuel[property] + step) : Math.max(0, leg.fuel[property] - step);
                 leg.fuel[property] = value;
                 if (property in leg.fuel.manual) leg.fuel.manual[property] = true;
                 if (property === "onboard") leg.automatic.fuel = false;
@@ -79,6 +100,10 @@ function bindFuelCard(leg, { field }) {
 
 export function initializeFuelPanel() {
     if (renderCards) return;
+    const fullRow = document.createElement("div");
+    fullRow.className = "fuel-full-row";
+    fullRow.innerHTML = '<button id="fullFuel" type="button">Full</button><span id="fuelLimitMessage" role="status" aria-live="polite"></span>';
+    document.getElementById("fuelOnBoard").closest(".field").after(fullRow);
     const procedureRow = document.createElement("div");
     procedureRow.className = "field enroute-procedure-fuel";
     procedureRow.innerHTML = '<span class="field-label">Procedimentos em rota</span><span id="enrouteProcedureFuel"></span>';

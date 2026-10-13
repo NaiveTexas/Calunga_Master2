@@ -15,6 +15,7 @@ test("NOTAM page deduplicates all legs and includes only procedure airports amon
     const { window, document } = parseHTML('<html><body><section id="notamPage" class="active"><button id="refreshNotams"></button><div id="notamAirports"></div></section></body></html>');
     globalThis.document = document;
     globalThis.window = window;
+    globalThis.CustomEvent = window.CustomEvent;
     const requests = [];
     globalThis.fetch = async url => {
         const icao = new URL(url, "http://localhost").searchParams.get("icao");
@@ -27,6 +28,16 @@ test("NOTAM page deduplicates all legs and includes only procedure airports amon
     assert.equal(requests.length, 4);
     assert.equal(document.querySelectorAll(".notam-report").length, 3);
     assert.equal(document.querySelectorAll("img").length, 0);
+    const article = document.querySelector(".notam-report");
+    const checkbox = article.querySelector('.notam-exclude input');
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new window.Event("change"));
+    assert.equal(article.classList.contains("notam-excluded"), true);
+    assert.equal(mission.settings.excludedNotams.length, 1);
+    checkbox.checked = false;
+    checkbox.dispatchEvent(new window.Event("change"));
+    assert.equal(article.classList.contains("notam-excluded"), false);
+    assert.deepEqual(mission.settings.excludedNotams, []);
     const filter = text => [...document.querySelectorAll(".notam-category-filter:not(.notam-airport-filter) button")].find(button => button.textContent.startsWith(text));
     const airportFilter = text => [...document.querySelectorAll(".notam-airport-filter button")].find(button => button.textContent.startsWith(text));
     const visible = () => [...document.querySelectorAll(".notam-report")].filter(report => !report.hidden).length;

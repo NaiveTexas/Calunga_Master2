@@ -1,3 +1,5 @@
+import { mission as currentMission } from "../models/missions.js";
+import { aircraftWeightUnit, formatWeight, weightInputValue, inputWeightKg } from "../core/weightUnits.js";
 import { updateMission } from "../core/missionEngine.js";
 const payloadModes = [
 
@@ -26,16 +28,18 @@ export function createPayloadEditor(panel, leg) {
         }
     }, true);
     const mission = { payload: leg.payload };
+    const model = () => currentMission.aircraft.model;
+    const state = () => JSON.stringify([leg.payload, aircraftWeightUnit(model())]);
     let snapshot = "";
     function commit() {
-        snapshot = JSON.stringify(leg.payload);
+        snapshot = state();
         updateTotals();
         updateMission();
     }
     function updateTotals() {
         for (const property of ["passengers", "cargo"]) {
             const total = panel.querySelector('[data-total="' + property + '"]');
-            if (total) total.textContent = leg.payload.data.detailed[property].reduce((sum, item) => sum + item.weight, 0) + " kg";
+            if (total) total.textContent = formatWeight(leg.payload.data.detailed[property].reduce((sum, item) => sum + item.weight, 0), model());
         }
     }
     function refreshPayloadPanel() {
@@ -70,23 +74,24 @@ export function createPayloadEditor(panel, leg) {
 
         label.classList.add("field-label");
 
-        label.textContent = "Payload";
+        label.textContent = `Payload (${aircraftWeightUnit(model())})`;
 
         const input = document.createElement("input");
 
         input.type = "number";
+        input.step = "any";
 
         input.classList.add("field-control");
 
-        input.value = mission.payload.entered === false ? "" : mission.payload.data.total.weight;
-        input.min = "0"; input.placeholder = "Informe o payload (KG), inclusive 0";
+        input.value = mission.payload.entered === false ? "" : weightInputValue(mission.payload.data.total.weight, model());
+        input.min = "0"; input.placeholder = `Informe o payload (${aircraftWeightUnit(model())}), inclusive 0`;
 
         input.addEventListener("change", () => {
             mission.payload.entered = input.value.trim() !== "" && Number.isFinite(Number(input.value)) && Number(input.value) >= 0;
 
             mission.payload.data.total.weight =
 
-                Number(input.value);
+                inputWeightKg(input.value, model());
 
             refreshPayloadPanel();
             commit();
@@ -155,23 +160,25 @@ export function createPayloadEditor(panel, leg) {
 
         label.classList.add("field-label");
 
-        label.textContent = labelText;
+        const isWeight = property.endsWith("Weight");
+        label.textContent = labelText + (isWeight ? ` (${aircraftWeightUnit(model())})` : "");
 
         const input = document.createElement("input");
 
         input.type = "number";
+        input.step = "any";
 
         input.classList.add("field-control");
 
         input.value =
 
-            mission.payload.data.average[property];
+            isWeight ? weightInputValue(mission.payload.data.average[property], model()) : mission.payload.data.average[property];
 
         input.addEventListener("change", () => {
 
             mission.payload.data.average[property] =
 
-                Number(input.value);
+                isWeight ? inputWeightKg(input.value, model()) : Number(input.value);
 
             refreshPayloadPanel();
             commit();
@@ -208,10 +215,7 @@ export function createPayloadEditor(panel, leg) {
         total.classList.add("payload-total");
 
         total.textContent =
-            `${mission.payload.data.detailed.passengers.reduce(
-                (sum,p)=>sum+p.weight,
-                0
-            )} kg`;
+            formatWeight(mission.payload.data.detailed.passengers.reduce((sum, item) => sum + item.weight, 0), model());
 
         passengerHeader.appendChild(title);
 
@@ -263,10 +267,7 @@ export function createPayloadEditor(panel, leg) {
         cargoTotal.classList.add("payload-total");
 
         cargoTotal.textContent =
-            `${mission.payload.data.detailed.cargo.reduce(
-                (sum,c)=>sum+c.weight,
-                0
-            )} kg`;
+            formatWeight(mission.payload.data.detailed.cargo.reduce((sum, item) => sum + item.weight, 0), model());
 
         cargoHeader.appendChild(cargoTitle);
 
@@ -432,6 +433,10 @@ export function createPayloadEditor(panel, leg) {
 
         );
 
+        const unit = document.createElement("span");
+        unit.textContent = aircraftWeightUnit(model());
+        row.appendChild(unit);
+
         row.appendChild(
 
             createCargoRemove(index)
@@ -467,14 +472,16 @@ export function createPayloadEditor(panel, leg) {
         const input = document.createElement("input");
 
         input.type = "number";
+        input.step = "any";
 
         input.classList.add("crew-weight");
 
-        input.value = cargo.weight;
+        input.value = weightInputValue(cargo.weight, model());
+        input.title = `Peso (${aircraftWeightUnit(model())})`;
 
         input.addEventListener("input", () => {
 
-            cargo.weight = Number(input.value);
+            cargo.weight = inputWeightKg(input.value, model());
 
             commit();
 
@@ -555,20 +562,21 @@ export function createPayloadEditor(panel, leg) {
         const input=document.createElement("input");
 
         input.type="number";
+        input.step = "any";
 
         input.classList.add("crew-weight");
 
         const unit = document.createElement("span");
 
-        unit.textContent = "kg";
+        unit.textContent = aircraftWeightUnit(model());
 
         unit.classList.add("payload-unit");
 
-        input.value=passenger.weight;
+        input.value=weightInputValue(passenger.weight, model());
 
         input.addEventListener("input",()=>{
 
-            passenger.weight=Number(input.value);
+            passenger.weight=inputWeightKg(input.value, model());
 
             commit();
 
@@ -601,7 +609,7 @@ export function createPayloadEditor(panel, leg) {
     }
 
     return function refresh() {
-        const current = JSON.stringify(leg.payload);
+        const current = state();
         if (current !== snapshot) {
             refreshPayloadPanel();
             snapshot = current;

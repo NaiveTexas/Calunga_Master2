@@ -6,7 +6,8 @@ const pendingRequests = new Map();
 export async function getCachedResponse(
     key,
     request,
-    ttlMs = CACHE_TTL_MS
+    ttlMs = CACHE_TTL_MS,
+    { staleIfErrorMs = 0 } = {}
 ) {
 
     const cached = responseCache.get(key);
@@ -34,6 +35,13 @@ export async function getCachedResponse(
 
             return data;
 
+        })
+        .catch(error => {
+            if (cached && staleIfErrorMs > 0 && Date.now() - cached.createdAt < staleIfErrorMs) {
+                console.warn(`Usando cache recente de ${key} (${new Date(cached.createdAt).toISOString()}): ${error.message}`);
+                return cached.data;
+            }
+            throw error;
         })
         .finally(() => {
             pendingRequests.delete(key);

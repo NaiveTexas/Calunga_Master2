@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createBriefingPdf } from "../js/services/briefingPdf.js";
+import { setNotamExcluded } from "../js/core/notamExclusions.js";
 
 export const leg = {
     flightLevel: "FL100",
@@ -21,4 +22,29 @@ test("briefing PDF paginates long reports, identifies the leg and embeds the RED
     assert.match(output, /ogimet.com\/display_gramet.php/);
     assert.match(output, /icao=SBNT_SBGL&hini=0&tref=&hfin=0&fl=100&enviar=Enviar/);
     assert.match(output, /NOTAMS/);
+});
+
+test("PDF takes weight and fuel units from the aircraft, regardless of a stale preference", () => {
+    const c98 = { ...aircraft, model: { ...aircraft.model, name: "C-98", weightUnit: "LB", fuel: { defaultUnit: "LB" } } };
+    const sample = { ...leg, weight: { payload: 453.59237, takeoff: 4535.9237, landing: 4082.33133, availability: { remaining: 45.359237 } } };
+    const output = createBriefingPdf(sample, c98, { fuelUnit: "KG" }, 0, reports).output();
+    assert.match(output, /10\.000 LB/);
+    assert.match(output, /9\.000 LB/);
+    assert.match(output, /1\.000 LB \/ 100 LB/);
+    assert.match(output, /2\.400 LB/);
+    const a29 = { ...aircraft, model: { ...aircraft.model, name: "A-29", weightUnit: "KG", fuel: { defaultUnit: "KG" } } };
+    assert.match(createBriefingPdf(leg, a29, { fuelUnit: "LB" }, 0, reports).output(), /2\.400 KG/);
+});
+
+test("PDF omits excluded NOTAMs, keeps others and permits undo", () => {
+    const ignored = { n: "B0123/26", loc: "SBNT", b: "2609010000", c: "PERM", e: "EXCLUDED_NOTICE" };
+    const retained = { ...ignored, n: "B0124/26", e: "RETAINED_NOTICE" };
+    const data = { ...reports, notams: [{ icao: "SBNT", reports: [ignored, retained] }] };
+    const settings = {};
+    setNotamExcluded(settings, ignored, "SBNT", true);
+    const output = createBriefingPdf(leg, aircraft, settings, 0, data).output();
+    assert.doesNotMatch(output, /EXCLUDED_NOTICE/);
+    assert.match(output, /RETAINED_NOTICE/);
+    setNotamExcluded(settings, ignored, "SBNT", false);
+    assert.match(createBriefingPdf(leg, aircraft, settings, 0, data).output(), /EXCLUDED_NOTICE/);
 });

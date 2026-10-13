@@ -15,6 +15,12 @@ app.get("/healthz", (req, res) => res.json({ status: "ok" }));
 app.get("/manifest.webmanifest", (req, res) => res.type("application/manifest+json").sendFile(fileURLToPath(new URL("../public/manifest.webmanifest", import.meta.url))));
 app.use("/pwa", express.static(fileURLToPath(new URL("../public/pwa/", import.meta.url)), { dotfiles: "deny", index: false }));
 app.use(testAccess);
+app.use("/enrc-static", express.static(fileURLToPath(new URL("../public/enrc-static/", import.meta.url)), {
+    dotfiles: "deny", index: false,
+    setHeaders(res, path) {
+        res.setHeader("Cache-Control", path.endsWith(".json") ? "private, no-cache" : "private, max-age=2592000, immutable");
+    }
+}));
 app.use("/api", createApiLimit());
 app.use(notamRoutes);
 app.use(express.json());
